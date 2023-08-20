@@ -1,6 +1,40 @@
-.time{
+.container {
   display: flex;
+  text-align: center;
   justify-content: center;
   margin-top: 10em;
+  margin-bottom: 10em;
+}
+.time {
   font-size: 2em;
+}
+.input{
+  text-align: center;
+  width: 41px;
+  outline: none;
+  border: none;
+  font-size: 1em;
+}
+/* Chrome, Safari, Edge, Opera */
+.noSpin::-webkit-outer-spin-button,
+.noSpin::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+/* Firefox */
+.noSpin[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.containerActiveButton{
+  /* display: inline-block; */
+}
+.activeButton{
+  height: 38px;
+  vertical-align: text-top;
+  border-radius: 5px;
+  border-width: 0px;
+}
+.inactiveButton{
+  height: 30px;
 }
