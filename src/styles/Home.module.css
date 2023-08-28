@@ -14,6 +14,7 @@
   outline: none;
   border: none;
   font-size: 1em;
+  background-color: transparent;
 }
 /* Chrome, Safari, Edge, Opera */
 .noSpin::-webkit-outer-spin-button,
@@ -30,11 +31,15 @@
   /* display: inline-block; */
 }
 .activeButton{
+  margin-left: 5px;
   height: 38px;
   vertical-align: text-top;
-  border-radius: 5px;
-  border-width: 0px;
+  border-radius: 8px;
+  border-width: 1px;
 }
 .inactiveButton{
-  height: 30px;
+  height: 38px;
+  vertical-align: text-top;
+  border-radius: 8px;
+  border-width: 1px;
 }

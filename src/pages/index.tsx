@@ -1,6 +1,8 @@
 import styles from "@/styles/Home.module.css";
 import { useForm } from "react-hook-form";
 import { ChangeEvent, useState, useEffect, useRef } from "react";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 type FormData = {
   hour: number;
@@ -8,12 +10,24 @@ type FormData = {
   second: number;
 };
 
+const schema = yup.object().shape({
+  hour: yup
+    .number()
+    .integer()
+    .min(0)
+    .max(1, "多いよ！")
+    .required("hour is required"),
+  minute: yup.number().integer().min(0).max(59),
+  second: yup.number().integer().min(0).max(59),
+});
+
 export default function Home() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormData>();
+  const { register, handleSubmit, formState } = useForm<FormData>({
+    resolver: yupResolver(schema),
+    mode: "all",
+  });
+
+  const { isDirty, isSubmitting, touchedFields, submitCount } = formState;
 
   const [hour, setHour] = useState<number>(0);
   const [minute, setMinute] = useState<number>(0);
@@ -21,17 +35,20 @@ export default function Home() {
   const [isActive, setIsActive] = useState<boolean>(false);
   const [time, setTime] = useState<number>(0);
   const wasActive = useRef<boolean>(false);
+  const audio = useRef<HTMLAudioElement | null>(null);
 
   // 表示用のhour, minute, second
   const [displayHour, setDisplayHour] = useState<string>("00");
   const [displayMinute, setDisplayMinute] = useState<string>("00");
   const [displaySecond, setDisplaySecond] = useState<string>("00");
 
-  useEffect(()=>{
+  // 表示用のhour, minute, secondを更新する。
+  // 10の位は0埋めする。
+  useEffect(() => {
     setDisplayHour(hour.toString().padStart(2, "0"));
     setDisplayMinute(minute.toString().padStart(2, "0"));
     setDisplaySecond(second.toString().padStart(2, "0"));
-  }, [hour, minute, second])
+  }, [hour, minute, second]);
 
   // wasActiveを更新
   useEffect(() => {
@@ -46,10 +63,23 @@ export default function Home() {
     if (wasActive.current === true && isActive === false && time === 0) {
       // alert("Time's up!");
       console.log("Time's up!");
-      const audio = new Audio("/alarm.mp3");
-      audio.play();
+      audio.current = new Audio("/mixkit-tick-tock-clock-timer-1045.wav");
+      audio.current.play();
     }
   }, [isActive, time, wasActive.current]);
+
+  useEffect(() => {
+    const stopAudio = () => {
+      audio.current?.pause();
+      if (audio.current) {
+        audio.current.currentTime = 0;
+      }
+    };
+    window.addEventListener("click", stopAudio);
+    return () => {
+      window.removeEventListener("click", stopAudio);
+    };
+  }, []);
 
   // タイマーのカウントダウン
   useEffect(() => {
@@ -74,11 +104,6 @@ export default function Home() {
     setTime(hour * 3600 + minute * 60 + second);
   }, [hour, minute, second]);
 
-  // hour, minute, secondの初期表示を"00"にする
-  useEffect(() => {
-  }, []);
-
-
   // timeの変更をhour, minute, secondに反映
   useEffect(() => {
     setHour(Math.floor(time / 3600));
@@ -88,40 +113,58 @@ export default function Home() {
 
   return (
     <div className={styles.container}>
-      <div >
-        <form className={styles.time} onSubmit={handleSubmit((data) => console.log(data))}>
+      <div>
+        <form
+          className={styles.time}
+          onSubmit={handleSubmit((data) => console.log(data))}
+        >
           <input
+            // ref={register}
             className={`${styles.input} ${styles.noSpin}`}
             type="number"
             value={displayHour}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setHour(Number(e.target.value))
-            }
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              if (Number(e.target.value) > 23) {
+                setHour(23);
+              } else {
+                setHour(Number(e.target.value));
+              }
+            }}
           ></input>
           <span>:</span>
           <input
             className={`${styles.input} ${styles.noSpin}`}
             type="number"
             value={displayMinute}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setMinute(Number(e.target.value))
-            }
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              if (Number(e.target.value) > 59) {
+                setMinute(59);
+              } else {
+                setMinute(Number(e.target.value));
+              }
+            }}
           ></input>
           <span>:</span>
           <input
             className={`${styles.input} ${styles.noSpin}`}
             type="number"
             value={displaySecond}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setSecond(Number(e.target.value))
-            }
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              if (Number(e.target.value) > 59) {
+                setSecond(59);
+              } else {
+                setSecond(Number(e.target.value));
+              }
+            }}
           ></input>
           <span className={styles.containerActiveButton}>
             {isActive ? (
               <button
                 className={styles.inactiveButton}
                 type="button"
-                onClick={() => setIsActive(false)}
+                onClick={() => {
+                  setIsActive(false);
+                }}
               >
                 Stop
               </button>
@@ -129,7 +172,13 @@ export default function Home() {
               <button
                 className={styles.activeButton}
                 type="button"
-                onClick={() => setIsActive(true)}
+                onClick={() => {
+                  if (time === 0) {
+                    return null;
+                  } else {
+                    setIsActive(true);
+                  }
+                }}
               >
                 Start
               </button>
