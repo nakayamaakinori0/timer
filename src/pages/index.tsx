@@ -135,6 +135,10 @@ export default function Home() {
                 type="button"
                 onClick={() => {
                   setIsActive(false);
+                  if (audio.current) {
+                    audio.current.pause();
+                    audio.current.currentTime = 0;
+                  }
                 }}
               >
                 Stop

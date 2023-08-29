@@ -8,7 +8,7 @@
 .time {
   font-size: 2em;
 }
-.input{
+.input {
   text-align: center;
   width: 41px;
   outline: none;
@@ -27,17 +27,18 @@
   -moz-appearance: textfield;
 }
 
-.containerActiveButton{
+.containerActiveButton {
   /* display: inline-block; */
 }
-.activeButton{
+.activeButton {
   margin-left: 5px;
   height: 38px;
   vertical-align: text-top;
   border-radius: 8px;
   border-width: 1px;
 }
-.inactiveButton{
+.inactiveButton {
+  margin-left: 5px;
   height: 38px;
   vertical-align: text-top;
   border-radius: 8px;
