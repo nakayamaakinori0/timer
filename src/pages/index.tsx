@@ -1,11 +1,10 @@
+import Hour from "@/components/Hour";
+import Minute from "@/components/Minute";
+import Second from "@/components/Second";
+import StartButton from "@/components/StartButton";
+import StopButton from "@/components/StopButton";
 import styles from "@/styles/Home.module.css";
 import { ChangeEvent, useState, useEffect, useRef, useCallback } from "react";
-
-type FormData = {
-  hour: number;
-  minute: number;
-  second: number;
-};
 
 export default function Home() {
   const [hour, setHour] = useState<number>(0);
@@ -86,77 +85,70 @@ export default function Home() {
     }
   }, [time]);
 
+  const hourChangeHandler = useCallback((e: { target: { value: any } }) => {
+    if (Number(displayHour) > 23) {
+      setHour(23);
+    } else {
+      setHour(Number(e.target.value));
+    }
+  }, []);
+
+  const minuteChangeHandler = useCallback((e: { target: { value: any } }) => {
+    if (Number(displayMinute) > 59) {
+      setMinute(59);
+    } else {
+      setMinute(Number(e.target.value));
+    }
+  }, []);
+
+  const secondChangeHandler = useCallback((e: { target: { value: any } }) => {
+    if (Number(displaySecond) > 59) {
+      setSecond(59);
+    } else {
+      setSecond(Number(e.target.value));
+    }
+  }, []);
+
+  const stopHandler = useCallback(() => {
+    setIsActive(false);
+    if (audio.current) {
+      audio.current.pause();
+      audio.current.currentTime = 0;
+    }
+  }, []);
+
+  const startHandler = useCallback(() => {
+    console.log("startHandler");
+    if (time === 0) {
+      return null;
+    } else {
+      setIsActive(true);
+    }
+  }, []);
+
   return (
     <div className={styles.container}>
       <div>
         <form className={styles.time}>
-          <input
-            className={`${styles.input} ${styles.noSpin}`}
-            type="number"
-            value={displayHour}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => {
-              if (Number(e.target.value) > 23) {
-                setHour(23);
-              } else {
-                setHour(Number(e.target.value));
-              }
-            }}
-          ></input>
+          <Hour
+            displayHour={displayHour}
+            hourChangeHandler={hourChangeHandler}
+          ></Hour>
           <span>:</span>
-          <input
-            className={`${styles.input} ${styles.noSpin}`}
-            type="number"
-            value={displayMinute}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => {
-              if (Number(e.target.value) > 59) {
-                setMinute(59);
-              } else {
-                setMinute(Number(e.target.value));
-              }
-            }}
-          ></input>
+          <Minute
+            displayMinute={displayMinute}
+            minuteChangeHandler={minuteChangeHandler}
+          ></Minute>
           <span>:</span>
-          <input
-            className={`${styles.input} ${styles.noSpin}`}
-            type="number"
-            value={displaySecond}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => {
-              if (Number(e.target.value) > 59) {
-                setSecond(59);
-              } else {
-                setSecond(Number(e.target.value));
-              }
-            }}
-          ></input>
+          <Second
+            displaySecond={displaySecond}
+            secondChangeHandler={secondChangeHandler}
+          ></Second>
           <span className={styles.containerActiveButton}>
             {isActive ? (
-              <button
-                className={styles.inactiveButton}
-                type="button"
-                onClick={() => {
-                  setIsActive(false);
-                  if (audio.current) {
-                    audio.current.pause();
-                    audio.current.currentTime = 0;
-                  }
-                }}
-              >
-                Stop
-              </button>
+              <StopButton stopHandler={stopHandler}></StopButton>
             ) : (
-              <button
-                className={styles.activeButton}
-                type="button"
-                onClick={() => {
-                  if (time === 0) {
-                    return null;
-                  } else {
-                    setIsActive(true);
-                  }
-                }}
-              >
-                Start
-              </button>
+              <StartButton startHandler={startHandler}></StartButton>
             )}
           </span>
         </form>
