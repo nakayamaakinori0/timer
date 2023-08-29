@@ -1,8 +1,5 @@
 import styles from "@/styles/Home.module.css";
-import { useForm } from "react-hook-form";
-import { ChangeEvent, useState, useEffect, useRef } from "react";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { ChangeEvent, useState, useEffect, useRef, useCallback } from "react";
 
 type FormData = {
   hour: number;
@@ -10,31 +7,12 @@ type FormData = {
   second: number;
 };
 
-const schema = yup.object().shape({
-  hour: yup
-    .number()
-    .integer()
-    .min(0)
-    .max(1, "多いよ！")
-    .required("hour is required"),
-  minute: yup.number().integer().min(0).max(59),
-  second: yup.number().integer().min(0).max(59),
-});
-
 export default function Home() {
-  const { register, handleSubmit, formState } = useForm<FormData>({
-    // resolver: yupResolver(schema),
-    mode: "all",
-  });
-
-  const { isDirty, isSubmitting, touchedFields, submitCount } = formState;
-
   const [hour, setHour] = useState<number>(0);
   const [minute, setMinute] = useState<number>(0);
   const [second, setSecond] = useState<number>(0);
   const [isActive, setIsActive] = useState<boolean>(false);
   const [time, setTime] = useState<number>(0);
-  const wasActive = useRef<boolean>(false);
   const audio = useRef<HTMLAudioElement | null>(null);
 
   // 表示用のhour, minute, second
@@ -50,38 +28,30 @@ export default function Home() {
     setDisplaySecond(second.toString().padStart(2, "0"));
   }, [hour, minute, second]);
 
-  // wasActiveを更新
-  useEffect(() => {
-    setIsActive((prevIsActive) => {
-      wasActive.current = prevIsActive;
-      return isActive;
-    });
-  }, [time]);
+  const stopAudio = useCallback(() => {
+    audio.current?.pause();
+    if (audio.current) {
+      audio.current.currentTime = 0;
+    }
+    setIsActive(false);
+  }, []);
 
   // タイマーが0になったときにアラームを鳴らす
   useEffect(() => {
-    if (wasActive.current === true && isActive === false && time === 0) {
+    if (isActive === true && time === 0) {
       // alert("Time's up!");
       console.log("Time's up!");
       audio.current = new Audio("/mixkit-tick-tock-clock-timer-1045.wav");
       audio.current.play();
+      window.addEventListener("click", stopAudio);
     }
-  }, [isActive, time, wasActive.current]);
-
-  useEffect(() => {
-    const stopAudio = () => {
-      audio.current?.pause();
-      if (audio.current) {
-        audio.current.currentTime = 0;
-      }
-    };
-    window.addEventListener("click", stopAudio);
     return () => {
       window.removeEventListener("click", stopAudio);
     };
-  }, []);
+  }, [isActive, time]);
 
   // タイマーのカウントダウン
+  // TODO: timeが依存配列にはいってるせいで,timeが変わるたびにsetIntervalが再設定されてしまう。
   useEffect(() => {
     let interval: any = null;
     if (isActive && time > 0) {
@@ -90,36 +60,37 @@ export default function Home() {
       }, 1000);
     }
     return () => clearInterval(interval);
-  }, [isActive]);
-
-  // タイマーが0になったときにisActiveをfalseにする
-  useEffect(() => {
-    if (time === 0) {
-      setIsActive(false);
-    }
-  }, [time]);
+  }, [isActive, time]);
 
   // 時間の入力を秒に変換
   useEffect(() => {
-    setTime(hour * 3600 + minute * 60 + second);
+    const newTime = hour * 3600 + minute * 60 + second;
+    if (newTime !== time) {
+      setTime(newTime);
+    }
   }, [hour, minute, second]);
 
   // timeの変更をhour, minute, secondに反映
   useEffect(() => {
-    setHour(Math.floor(time / 3600));
-    setMinute(Math.floor((time % 3600) / 60));
-    setSecond(Math.floor((time % 3600) % 60));
+    const newHour = Math.floor(time / 3600);
+    const newMinute = Math.floor((time % 3600) / 60);
+    const newSecond = Math.floor((time % 3600) % 60);
+    if (newHour !== hour) {
+      setHour(newHour);
+    }
+    if (newMinute !== minute) {
+      setMinute(newMinute);
+    }
+    if (newSecond !== second) {
+      setSecond(newSecond);
+    }
   }, [time]);
 
   return (
     <div className={styles.container}>
       <div>
-        <form
-          className={styles.time}
-          onSubmit={handleSubmit((data) => console.log(data))}
-        >
+        <form className={styles.time}>
           <input
-            // ref={register}
             className={`${styles.input} ${styles.noSpin}`}
             type="number"
             value={displayHour}
