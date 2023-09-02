@@ -7,6 +7,7 @@ import styles from "@/styles/Home.module.css";
 import { ChangeEvent, useState, useEffect, useRef, useCallback } from "react";
 
 export default function Home() {
+  const [initialTime, setInitialTime] = useState<number>(0);
   const [hour, setHour] = useState<number>(0);
   const [minute, setMinute] = useState<number>(0);
   const [second, setSecond] = useState<number>(0);
@@ -27,13 +28,16 @@ export default function Home() {
     setDisplaySecond(second.toString().padStart(2, "0"));
   }, [hour, minute, second]);
 
+  // タイマーを止め,timeを初期化する。
   const stopAudio = useCallback(() => {
+    console.log("stopAudio");
     audio.current?.pause();
     if (audio.current) {
       audio.current.currentTime = 0;
     }
     setIsActive(false);
-  }, []);
+    setTime(initialTime);
+  }, [audio, audio?.current, initialTime]);
 
   // タイマーが0になったときにアラームを鳴らす
   useEffect(() => {
@@ -86,7 +90,7 @@ export default function Home() {
   }, [time]);
 
   const hourChangeHandler = useCallback((e: { target: { value: any } }) => {
-    if (Number(displayHour) > 23) {
+    if (Number(e.target.value) > 23) {
       setHour(23);
     } else {
       setHour(Number(e.target.value));
@@ -94,7 +98,7 @@ export default function Home() {
   }, []);
 
   const minuteChangeHandler = useCallback((e: { target: { value: any } }) => {
-    if (Number(displayMinute) > 59) {
+    if (Number(e.target.value) > 59) {
       setMinute(59);
     } else {
       setMinute(Number(e.target.value));
@@ -102,7 +106,7 @@ export default function Home() {
   }, []);
 
   const secondChangeHandler = useCallback((e: { target: { value: any } }) => {
-    if (Number(displaySecond) > 59) {
+    if (Number(e.target.value) > 59) {
       setSecond(59);
     } else {
       setSecond(Number(e.target.value));
@@ -110,21 +114,17 @@ export default function Home() {
   }, []);
 
   const stopHandler = useCallback(() => {
-    setIsActive(false);
-    if (audio.current) {
-      audio.current.pause();
-      audio.current.currentTime = 0;
-    }
-  }, []);
+    stopAudio();
+  }, [audio, audio?.current, stopAudio]);
 
   const startHandler = useCallback(() => {
-    console.log("startHandler");
+    setInitialTime(time);
     if (time === 0) {
       return null;
     } else {
       setIsActive(true);
     }
-  }, []);
+  }, [time]);
 
   return (
     <div className={styles.container}>
@@ -133,16 +133,19 @@ export default function Home() {
           <Hour
             displayHour={displayHour}
             hourChangeHandler={hourChangeHandler}
+            isActive={isActive}
           ></Hour>
           <span>:</span>
           <Minute
             displayMinute={displayMinute}
             minuteChangeHandler={minuteChangeHandler}
+            isActive={isActive}
           ></Minute>
           <span>:</span>
           <Second
             displaySecond={displaySecond}
             secondChangeHandler={secondChangeHandler}
+            isActive={isActive}
           ></Second>
           <span className={styles.containerActiveButton}>
             {isActive ? (

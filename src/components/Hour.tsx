@@ -4,6 +4,7 @@ import styles from "@/styles/Home.module.css";
 export default function Hour({
   displayHour,
   hourChangeHandler,
+  isActive,
 }): React.JSX.Element {
   return (
       <input
@@ -11,6 +12,7 @@ export default function Hour({
         type="number"
         value={displayHour}
         onChange={hourChangeHandler}
+        disabled={isActive}
       ></input>
   );
 }
