@@ -1,6 +1,13 @@
-import React from "react";
+import React, { MouseEventHandler } from "react";
 import styles from "@/styles/Home.module.css";
-export default function StopButton({ stopHandler }) {
+
+interface StopButtonProps {
+  stopHandler: MouseEventHandler<HTMLButtonElement>;
+}
+
+export default function StopButton({
+  stopHandler,
+}: StopButtonProps): React.JSX.Element {
   return (
     <button
       className={styles.inactiveButton}
