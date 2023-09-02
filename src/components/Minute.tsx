@@ -1,11 +1,17 @@
 import React, { ChangeEvent } from "react";
 import styles from "@/styles/Home.module.css";
 
+interface MinuteProps {
+  displayMinute: string;
+  minuteChangeHandler: (e: ChangeEvent<HTMLInputElement>) => void;
+  isActive: boolean;
+}
+
 export default function Hour({
   displayMinute,
   minuteChangeHandler,
   isActive,
-}): React.JSX.Element {
+}: MinuteProps): React.JSX.Element {
   return (
       <input
         className={`${styles.input} ${styles.noSpin}`}
