@@ -5,7 +5,7 @@ interface StartButtonProps {
   startHandler: MouseEventHandler<HTMLButtonElement>;
 }
 
-export default function StopButton({
+export default function StartButton({
   startHandler,
 }: StartButtonProps): React.JSX.Element {
   return (

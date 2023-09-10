@@ -4,10 +4,10 @@ import Second from "@/components/Second";
 import StartButton from "@/components/StartButton";
 import StopButton from "@/components/StopButton";
 import styles from "@/styles/Home.module.css";
-import { ChangeEvent, useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import HourControler from "@/components/HourControler";
 
 export default function Home() {
-  const [initialTime, setInitialTime] = useState<number>(0);
   const [hour, setHour] = useState<number>(0);
   const [minute, setMinute] = useState<number>(0);
   const [second, setSecond] = useState<number>(0);
@@ -36,8 +36,7 @@ export default function Home() {
       audio.current.currentTime = 0;
     }
     setIsActive(false);
-    setTime(initialTime);
-  }, [audio, audio?.current, initialTime]);
+  }, [audio, audio?.current]);
 
   // タイマーが0になったときにアラームを鳴らす
   useEffect(() => {
@@ -118,7 +117,6 @@ export default function Home() {
   }, [audio, audio?.current, stopAudio]);
 
   const startHandler = useCallback(() => {
-    setInitialTime(time);
     if (time === 0) {
       return null;
     } else {
@@ -155,6 +153,7 @@ export default function Home() {
             )}
           </span>
         </form>
+        <HourControler isActive={isActive} setHour={setHour} hour={hour}></HourControler>
       </div>
     </div>
   );
