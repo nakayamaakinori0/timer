@@ -18,6 +18,9 @@
   font-size: 1em;
   background-color: transparent;
 }
+.input:disabled {
+  color: rgb(106, 122, 117);
+}
 /* Chrome, Safari, Edge, Opera */
 .noSpin::-webkit-outer-spin-button,
 .noSpin::-webkit-inner-spin-button {
