@@ -20,14 +20,14 @@ export function useInteractJS(
     ...initPosition,
     ...position,
   });
-  const maxPositionRef = useRef(maxPosition);
-  useEffect(() => {
-    maxPositionRef.current = maxPosition;
-  }, [maxPosition]);
-  const minPositionRef = useRef(minPosition);
-  useEffect(() => {
-    minPositionRef.current = minPosition;
-  }, [minPosition]);
+  const [_minPosition, setMinPosition] = useState({
+    ...initPosition,
+    ...minPosition,
+  });
+  const [_maxPosition, setMaxPosition] = useState({
+    ...initPosition,
+    ...maxPosition,
+  });
 
   const interactRef = useRef<HTMLElement | null>(null);
   let { x, y } = _position;
@@ -40,23 +40,23 @@ export function useInteractJS(
       .on("dragmove", (event) => {
         x += event.dx;
         // y += event.dy;
-        if (x >= minPositionRef.current.x && x <= maxPositionRef.current.x) {
+        if (x >= _minPosition.x && x <= _maxPosition.x) {
           setPosition({
             x,
             y,
           });
         }
 
-        if (x < minPositionRef.current.x) {
+        if (x < _minPosition.x) {
           setPosition({
-            x: minPositionRef.current.x,
+            x: _minPosition.x,
             y,
           });
         }
 
-        if (x > maxPositionRef.current.x) {
+        if (x > _maxPosition.x) {
           setPosition({
-            x: maxPositionRef.current.x,
+            x: _maxPosition.x,
             y,
           });
         }
@@ -78,8 +78,12 @@ export function useInteractJS(
       position: "absolute" as CSSProperties["position"],
     },
     position: _position,
+    minPosition: _minPosition,
+    maxPosition: _maxPosition,
     enable,
     disable,
     setPosition,
+    setMinPosition,
+    setMaxPosition,
   };
 }

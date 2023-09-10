@@ -1,6 +1,6 @@
 import styles from "@/styles/Home.module.css";
 import { useRef, useEffect, useState } from "react";
-import { useInteractJS } from "@/hooks/hook";
+import { useInteractJS } from "@/hooks/useInteractJS";
 
 interface HourControlerProps {
   isActive: boolean;
@@ -15,14 +15,23 @@ export default function HourControler({
 }: HourControlerProps): React.JSX.Element {
   const initPosition = { x: 0, y: 0 };
   const minPosition = { x: 0, y: 0 };
-  const [maxPosition, setMaxPosition] = useState({ x: 0, y: 0 });
+  const maxPosition = { x: 0, y: 0 };
   const barRef = useRef<HTMLDivElement | null>(null);
   const squareRef = useRef<HTMLDivElement | null>(null);
   const interact = useInteractJS(initPosition, minPosition, maxPosition);
 
+  const calcHour = (x_position: number) => {
+    const hour = Math.round((x_position / interact.maxPosition.x) * 23);
+    return hour;
+  };
+  const calcPosition = (hour: number) => {
+    const x_position = Math.round((hour / 23) * interact.maxPosition.x);
+    return x_position;
+  };
+
   useEffect(() => {
     if (barRef.current && squareRef.current) {
-      setMaxPosition({
+      interact.setMaxPosition({
         x: barRef.current.clientWidth - squareRef.current.clientWidth,
         y: 0,
       });
@@ -35,7 +44,21 @@ export default function HourControler({
     } else {
       interact.enable();
     }
-  }, [isActive]);
+  }, [isActive, interact.position]);
+
+  useEffect(() => {
+    const newHour = calcHour(interact.position.x) | 0;
+    if (newHour !== hour) {
+      setHour(newHour);
+    }
+  }, [interact.position.x]);
+
+  useEffect(() => {
+    const newPosition = { x: calcPosition(hour), y: 0 };
+    if (newPosition.x !== interact.position.x) {
+      interact.setPosition(newPosition);
+    }
+  }, [hour]);
 
   return (
     <>
