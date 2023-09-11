@@ -2,17 +2,17 @@ import styles from "@/styles/Home.module.css";
 import { useRef, useEffect } from "react";
 import { useInteractJS } from "@/hooks/useInteractJS";
 
-interface HourControlerProps {
+interface SecondControlerProps {
   isActive: boolean;
-  setHour: React.Dispatch<React.SetStateAction<number>>;
-  hour: number;
+  setSecond: React.Dispatch<React.SetStateAction<number>>;
+  second: number;
 }
 
-export default function HourControler({
+export default function SecondControler({
   isActive,
-  setHour,
-  hour,
-}: HourControlerProps): React.JSX.Element {
+  setSecond,
+  second,
+}: SecondControlerProps): React.JSX.Element {
   const initPosition = { x: 0, y: 0 };
   const minPosition = { x: 0, y: 0 };
   const maxPosition = { x: 0, y: 0 };
@@ -20,12 +20,12 @@ export default function HourControler({
   const squareRef = useRef<HTMLDivElement | null>(null);
   const interact = useInteractJS(initPosition, minPosition, maxPosition);
 
-  const calcHour = (x_position: number) => {
-    const hour = Math.round((x_position / interact.maxPosition.x) * 23);
-    return hour;
+  const calcSecond = (x_position: number) => {
+    const second = Math.round((x_position / interact.maxPosition.x) * 59);
+    return second;
   };
-  const calcPosition = (hour: number) => {
-    const x_position = Math.round((hour / 23) * interact.maxPosition.x);
+  const calcPosition = (second: number) => {
+    const x_position = Math.round((second / 59) * interact.maxPosition.x);
     return x_position;
   };
 
@@ -47,22 +47,22 @@ export default function HourControler({
   }, [isActive, interact.position]);
 
   useEffect(() => {
-    const newHour = calcHour(interact.position.x) | 0;
-    if (newHour !== hour) {
-      setHour(newHour);
+    const newSecond = calcSecond(interact.position.x) | 0;
+    if (newSecond !== second) {
+      setSecond(newSecond);
     }
   }, [interact.position.x]);
 
   useEffect(() => {
-    const newPosition = { x: calcPosition(hour), y: 0 };
+    const newPosition = { x: calcPosition(second), y: 0 };
     if (newPosition.x !== interact.position.x) {
       interact.setPosition(newPosition);
     }
-  }, [hour]);
+  }, [second]);
 
   return (
     <>
-      <div>H</div>
+      <div>S</div>
       <div>
         <div ref={barRef} className={styles.bar}>
           <div

@@ -6,6 +6,8 @@ import StopButton from "@/components/StopButton";
 import styles from "@/styles/Home.module.css";
 import { useState, useEffect, useRef, useCallback } from "react";
 import HourControler from "@/components/HourControler";
+import MinuteControler from "@/components/MinuteControler";
+import SecondControler from "@/components/SecondControler";
 
 export default function Home() {
   const [hour, setHour] = useState<number>(0);
@@ -153,7 +155,21 @@ export default function Home() {
             )}
           </span>
         </form>
-        <HourControler isActive={isActive} setHour={setHour} hour={hour}></HourControler>
+        <HourControler
+          isActive={isActive}
+          setHour={setHour}
+          hour={hour}
+        ></HourControler>
+        <MinuteControler
+          isActive={isActive}
+          setMinute={setMinute}
+          minute={minute}
+        ></MinuteControler>
+        <SecondControler
+          isActive={isActive}
+          setSecond={setSecond}
+          second={second}
+        ></SecondControler>
       </div>
     </div>
   );
