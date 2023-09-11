@@ -52,10 +52,30 @@
   border-width: 1px;
 }
 
+.controlerContainer{
+  display:flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  flex-direction: column;
+  height: 10em;
+}
+
+.controler {
+  display: flex;
+  justify-content: space-between;
+  width: 16em;
+  align-items: center;
+}
+
+.caption {
+  font-size: 1em;
+  color: #322c28;
+}
+
 .bar {
   position: relative;
   width: 200px;
-  height: 30px;
+  height: 22px;
   border: 1px solid #322c28;
   border-radius: 5px;
   box-sizing: border-box;
@@ -63,8 +83,8 @@
 
 .square {
   position: absolute;
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 22px;
   border: 1px solid #322c28;
   border-radius: 5px;
   box-sizing: border-box;
@@ -72,3 +92,4 @@
   left: -1px;
   z-index: 1;
 }
+

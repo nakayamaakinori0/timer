@@ -155,21 +155,23 @@ export default function Home() {
             )}
           </span>
         </form>
-        <HourControler
-          isActive={isActive}
-          setHour={setHour}
-          hour={hour}
-        ></HourControler>
-        <MinuteControler
-          isActive={isActive}
-          setMinute={setMinute}
-          minute={minute}
-        ></MinuteControler>
-        <SecondControler
-          isActive={isActive}
-          setSecond={setSecond}
-          second={second}
-        ></SecondControler>
+        <div className={styles.controlerContainer}>
+          <HourControler
+            isActive={isActive}
+            setHour={setHour}
+            hour={hour}
+          ></HourControler>
+          <MinuteControler
+            isActive={isActive}
+            setMinute={setMinute}
+            minute={minute}
+          ></MinuteControler>
+          <SecondControler
+            isActive={isActive}
+            setSecond={setSecond}
+            second={second}
+          ></SecondControler>
+        </div>
       </div>
     </div>
   );

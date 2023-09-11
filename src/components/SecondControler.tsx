@@ -62,19 +62,23 @@ export default function SecondControler({
 
   return (
     <>
-      <div>S</div>
-      <div>
-        <div ref={barRef} className={styles.bar}>
-          <div
-            ref={(elem) => {
-              interact.ref.current = elem;
-              squareRef.current = elem;
-            }}
-            className={styles.square}
-            style={{
-              ...interact.style,
-            }}
-          ></div>
+      <div className={styles.controler}>
+        <div className={styles.caption}>
+          <div>sec</div>
+        </div>
+        <div>
+          <div ref={barRef} className={styles.bar}>
+            <div
+              ref={(elem) => {
+                interact.ref.current = elem;
+                squareRef.current = elem;
+              }}
+              className={styles.square}
+              style={{
+                ...interact.style,
+              }}
+            ></div>
+          </div>
         </div>
       </div>
     </>
