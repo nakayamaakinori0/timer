@@ -92,3 +92,13 @@
   left: -1px;
   z-index: 1;
 }
+
+.saveTimes {
+  display: flex;
+  justify-content: space-around;
+}
+
+.saveTime {
+  cursor: pointer;
+  font-size: auto;
+}
