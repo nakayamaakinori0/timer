@@ -71,6 +71,7 @@ export default function Home() {
   }, [isActive]);
 
   // タイマーのカウントダウン
+  // 1秒ごとにtargetTimeと現在時刻の差を計算して、timeを更新する。
   useEffect(() => {
     let interval: any = null;
     if (isActive) {
