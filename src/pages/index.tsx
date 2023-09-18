@@ -16,6 +16,7 @@ export default function Home() {
   const [isActive, setIsActive] = useState<boolean>(false);
   const [time, setTime] = useState<number>(0);
   const audio = useRef<HTMLAudioElement | null>(null);
+  const [targetTime, setTargetTime] = useState<number>(0);
 
   // 表示用のhour, minute, second
   const [displayHour, setDisplayHour] = useState<string>("00");
@@ -30,7 +31,7 @@ export default function Home() {
     setDisplaySecond(second.toString().padStart(2, "0"));
   }, [hour, minute, second]);
 
-  // タイマーを止め,timeを初期化する。
+  // タイマーを止める
   const stopAudio = useCallback(() => {
     console.log("stopAudio");
     audio.current?.pause();
@@ -54,17 +55,30 @@ export default function Home() {
     };
   }, [isActive, time]);
 
+  // Startした時、targetTimeを設定する。
+  useEffect(() => {
+    if (isActive) {
+      setTargetTime(Date.now() + time * 1000);
+    }
+  }, [isActive]);
+
   // タイマーのカウントダウン
-  // TODO: timeが依存配列にはいってるせいで,timeが変わるたびにsetIntervalが再設定されてしまう。
   useEffect(() => {
     let interval: any = null;
-    if (isActive && time > 0) {
+    if (isActive) {
       interval = setInterval(() => {
-        setTime((prevTime) => prevTime - 1);
+        const now = Date.now();
+        const remainTime = Math.floor((targetTime - now) / 1000);
+        if (remainTime <= 0) {
+          clearInterval(interval);
+          setTime(0);
+        } else {
+          setTime(remainTime);
+        }
       }, 1000);
     }
     return () => clearInterval(interval);
-  }, [isActive, time]);
+  }, [isActive, targetTime]);
 
   // 時間の入力を秒に変換
   useEffect(() => {
