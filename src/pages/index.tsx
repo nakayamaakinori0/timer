@@ -8,6 +8,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import HourController from "@/components/HourController";
 import MinuteController from "@/components/MinuteController";
 import SecondController from "@/components/SecondController";
+import SaveTime from "@/components/SaveTime";
 
 export default function Home() {
   const [hour, setHour] = useState<number>(0);
@@ -22,14 +23,6 @@ export default function Home() {
   const [displayHour, setDisplayHour] = useState<string>("00");
   const [displayMinute, setDisplayMinute] = useState<string>("00");
   const [displaySecond, setDisplaySecond] = useState<string>("00");
-
-  // 保存用のHour, Minute, Second
-  const [saveArr, setSaveArr] = useState<object[]>([
-    { hour: hour, minute: minute, second: second },
-  ]);
-  const [displaySaveArr, setDisplaySaveArr] = useState<object[]>([
-    { hour: "00", minute: "00", second: "00" },
-  ]);
 
   // 表示用のhour, minute, secondを更新する。
   // 10の位は0埋めする。
@@ -149,48 +142,6 @@ export default function Home() {
     }
   }, [time]);
 
-  const saveHandler = useCallback(() => {
-    // もし、saveArrの最後の要素が現在の時間と同じだったら、保存しない。
-    if (
-      saveArr[saveArr.length - 1].hour === hour &&
-      saveArr[saveArr.length - 1].minute === minute &&
-      saveArr[saveArr.length - 1].second === second
-    ) {
-      return null;
-    }
-    setSaveArr([...saveArr, { hour: hour, minute: minute, second: second }]);
-  }, [hour, minute, second, saveArr]);
-
-  useEffect(() => {
-    setDisplaySaveArr(
-      saveArr.map((obj) => {
-        console.log(obj);
-        return {
-          hour: obj?.hour?.toString().padStart(2, "0"),
-          minute: obj?.minute?.toString().padStart(2, "0"),
-          second: obj?.second?.toString().padStart(2, "0"),
-        };
-      })
-    );
-  }, [saveArr]);
-
-  const loadHandler = useCallback(
-    (key: string | number) => {
-      console.log("key", key);
-      setHour(saveArr[key].hour);
-      setMinute(saveArr[key].minute);
-      setSecond(saveArr[key].second);
-    },
-    [saveArr]
-  );
-
-  const deleteHandler = useCallback(() => {
-    if (saveArr.length === 1) {
-      return null;
-    }
-    setSaveArr(saveArr.slice(0, saveArr.length - 1));
-  }, [saveArr]);
-
   return (
     <div className={styles.container}>
       <div>
@@ -237,21 +188,15 @@ export default function Home() {
             second={second}
           ></SecondController>
         </div>
-        <button onClick={saveHandler}>save</button>
-        <button onClick={deleteHandler}>del</button>
-        <div className={styles.saveTimes}>
-          {displaySaveArr.map((obj, key) => {
-            return (
-              <button
-                key={key}
-                className={styles.saveTime}
-                onClick={() => {
-                  loadHandler(key);
-                }}
-              >{`${obj.hour}:${obj.minute}:${obj.second}`}</button>
-            );
-          })}
-        </div>
+        <SaveTime
+          hour={hour}
+          minute={minute}
+          second={second}
+          setHour={setHour}
+          setMinute={setMinute}
+          setSecond={setSecond}
+          isActive={isActive}
+        ></SaveTime>
       </div>
     </div>
   );
