@@ -241,13 +241,13 @@ export default function Home() {
         <div className={styles.saveTimes}>
           {displaySaveArr.map((obj, key) => {
             return (
-              <span
+              <button
                 key={key}
                 className={styles.saveTime}
                 onClick={() => {
                   loadHandler(key);
                 }}
-              >{`${obj.hour}:${obj.minute}:${obj.second}`}</span>
+              >{`${obj.hour}:${obj.minute}:${obj.second}`}</button>
             );
           })}
         </div>
