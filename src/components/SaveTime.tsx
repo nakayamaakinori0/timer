@@ -38,11 +38,9 @@ export default function SaveTime({
   console.log("saveArr", saveArr);
   const [displaySaveArr, setDisplaySaveArr] = useState<DisplayTimeObj[]>([]);
   console.log("displaySaveArr", displaySaveArr);
+  const [disableSave, setDisableSave] = useState<boolean>(false);
 
   const saveHandler = useCallback(() => {
-    if (saveArr.length === 0) {
-      setSaveArr([{ hour: hour, minute: minute, second: second }]);
-    }
     if (
       saveArr[saveArr.length - 1]?.hour === hour &&
       saveArr[saveArr.length - 1]?.minute === minute &&
@@ -50,9 +48,20 @@ export default function SaveTime({
     ) {
       return null;
     }
+    if (saveArr.length >= 3) {
+      return null;
+    }
     // もし、saveArrの最後の要素が現在の時間と同じだったら、保存しない。
     setSaveArr([...saveArr, { hour: hour, minute: minute, second: second }]);
   }, [hour, minute, second, saveArr]);
+
+  useEffect(() => {
+    if (saveArr.length >= 3) {
+      setDisableSave(true);
+    } else {
+      setDisableSave(false);
+    }
+  }, [saveArr]);
 
   useEffect(() => {
     setDisplaySaveArr(
@@ -68,7 +77,7 @@ export default function SaveTime({
   }, [saveArr]);
 
   const loadHandler = useCallback(
-    (key: string | number) => {
+    (key: number) => {
       setHour(saveArr[key].hour);
       setMinute(saveArr[key].minute);
       setSecond(saveArr[key].second);
@@ -82,7 +91,7 @@ export default function SaveTime({
 
   return (
     <div>
-      <button onClick={saveHandler} disabled={isActive}>
+      <button onClick={saveHandler} disabled={isActive || disableSave}>
         save
       </button>
       <button onClick={deleteHandler} disabled={isActive}>
