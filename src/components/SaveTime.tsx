@@ -35,9 +35,7 @@ export default function SaveTime({
 }: SaveTimeProps): React.JSX.Element {
   // 保存用のHour, Minute, Second
   const [saveArr, setSaveArr] = useState<TimeObj[]>([]);
-  console.log("saveArr", saveArr);
   const [displaySaveArr, setDisplaySaveArr] = useState<DisplayTimeObj[]>([]);
-  console.log("displaySaveArr", displaySaveArr);
   const [disableSave, setDisableSave] = useState<boolean>(false);
 
   const saveHandler = useCallback(() => {
@@ -66,7 +64,6 @@ export default function SaveTime({
   useEffect(() => {
     setDisplaySaveArr(
       saveArr.map((obj) => {
-        console.log(obj);
         return {
           hour: obj?.hour?.toString().padStart(2, "0"),
           minute: obj?.minute?.toString().padStart(2, "0"),

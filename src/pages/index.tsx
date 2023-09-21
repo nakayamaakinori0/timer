@@ -34,7 +34,6 @@ export default function Home() {
 
   // タイマーを止める
   const stopAudio = useCallback(() => {
-    console.log("stopAudio");
     audio.current?.pause();
     if (audio.current) {
       audio.current.currentTime = 0;
@@ -46,7 +45,6 @@ export default function Home() {
   useEffect(() => {
     if (isActive === true && time === 0) {
       // alert("Time's up!");
-      console.log("Time's up!");
       audio.current = new Audio("/mixkit-tick-tock-clock-timer-1045.wav");
       audio.current.play();
       window.addEventListener("click", stopAudio);
