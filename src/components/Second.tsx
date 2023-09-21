@@ -19,6 +19,7 @@ export default function Hour({
       value={displaySecond}
       onChange={secondChangeHandler}
       disabled={isActive}
+      inputMode="numeric"
     ></input>
   );
 }

@@ -13,12 +13,13 @@ export default function Hour({
   isActive,
 }: MinuteProps): React.JSX.Element {
   return (
-      <input
-        className={`${styles.input} ${styles.noSpin}`}
-        type="number"
-        value={displayMinute}
-        onChange={minuteChangeHandler}
-        disabled={isActive}
-      ></input>
+    <input
+      className={`${styles.input} ${styles.noSpin}`}
+      type="number"
+      value={displayMinute}
+      onChange={minuteChangeHandler}
+      disabled={isActive}
+      inputMode="numeric"
+    ></input>
   );
 }
