@@ -52,15 +52,15 @@
   border-width: 1px;
 }
 
-.controlerContainer{
-  display:flex;
+.controllerContainer {
+  display: flex;
   justify-content: space-around;
   align-items: flex-start;
   flex-direction: column;
   height: 10em;
 }
 
-.controler {
+.controller {
   display: flex;
   justify-content: space-between;
   width: 16em;
@@ -92,4 +92,3 @@
   left: -1px;
   z-index: 1;
 }
-

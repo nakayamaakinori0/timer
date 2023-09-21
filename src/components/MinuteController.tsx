@@ -2,17 +2,17 @@ import styles from "@/styles/Home.module.css";
 import { useRef, useEffect } from "react";
 import { useInteractJS } from "@/hooks/useInteractJS";
 
-interface MinuteControlerProps {
+interface MinuteControllerProps {
   isActive: boolean;
   setMinute: React.Dispatch<React.SetStateAction<number>>;
   minute: number;
 }
 
-export default function MinuteControler({
+export default function MinuteController({
   isActive,
   setMinute,
   minute,
-}: MinuteControlerProps): React.JSX.Element {
+}: MinuteControllerProps): React.JSX.Element {
   const initPosition = { x: 0, y: 0 };
   const minPosition = { x: 0, y: 0 };
   const maxPosition = { x: 0, y: 0 };
@@ -36,7 +36,23 @@ export default function MinuteControler({
         y: 0,
       });
     }
-  }, [barRef.current, squareRef.current]);
+  }, []);
+
+  // square操作中はスクロールさせない。
+  useEffect(() => {
+    const handleTouchStart = () => {
+      document.body.style.overflowY = "hidden";
+    };
+    const handleTouchEnd = () => {
+      document.body.style.overflowY = "scroll";
+    };
+    squareRef.current?.addEventListener("touchstart", handleTouchStart);
+    squareRef.current?.addEventListener("touchend", handleTouchEnd);
+    return () => {
+      squareRef.current?.removeEventListener("touchstart", handleTouchStart);
+      squareRef.current?.removeEventListener("touchend", handleTouchEnd);
+    };
+  }, []);
 
   useEffect(() => {
     if (isActive) {
@@ -62,7 +78,7 @@ export default function MinuteControler({
 
   return (
     <>
-      <div className={styles.controler}>
+      <div className={styles.controller}>
         <div className={styles.caption}>
           <div>min</div>
         </div>
