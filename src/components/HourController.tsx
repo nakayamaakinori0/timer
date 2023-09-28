@@ -39,21 +39,26 @@ export default function HourController({
     }
   }, []);
 
-  // square操作中はスクロールさせない。
-  useEffect(() => {
-    const handleTouchStart = () => {
-      document.body.style.overflowY = "hidden";
-    };
-    const handleTouchEnd = () => {
-      document.body.style.overflowY = "scroll";
-    };
-    squareRef.current?.addEventListener("touchstart", handleTouchStart);
-    squareRef.current?.addEventListener("touchend", handleTouchEnd);
-    return () => {
-      squareRef.current?.removeEventListener("touchstart", handleTouchStart);
-      squareRef.current?.removeEventListener("touchend", handleTouchEnd);
-    };
-  }, []);
+        // square操作中はスクロールさせない。
+          useEffect(() => {
+            console.log("squareRef", squareRef.current);
+            const handleTouchStart = () => {
+              console.log("touchstart");
+              document.body.style.overflow = "hidden";
+              document.body.style.backgroundColor = "red";
+            };
+            const handleTouchEnd = () => {
+              console.log("touchend");
+              document.body.style.overflow = "scroll";
+              document.body.style.backgroundColor = "white";
+            };
+            squareRef.current?.addEventListener("touchstart", handleTouchStart);
+            squareRef.current?.addEventListener("touchend", handleTouchEnd);
+            return () => {
+              squareRef.current?.removeEventListener("touchstart", handleTouchStart);
+              squareRef.current?.removeEventListener("touchend", handleTouchEnd);
+            };
+          }, []);
 
   // Active→interactを無効化、InActive→interactを有効化
   useEffect(() => {
