@@ -88,12 +88,14 @@ export default function SaveTime({
 
   return (
     <div>
-      <button onClick={saveHandler} disabled={isActive || disableSave}>
-        save
-      </button>
-      <button onClick={deleteHandler} disabled={isActive}>
-        del
-      </button>
+      <div className={styles.saveTimeButtons}>
+        <button className={styles.saveButton} onClick={saveHandler} disabled={isActive || disableSave}>
+          save
+        </button>
+        <button className={styles.delButton} onClick={deleteHandler} disabled={isActive}>
+          del
+        </button>
+      </div>
       <div className={styles.saveTimes}>
         {displaySaveArr?.map((obj, key) => {
           return (
