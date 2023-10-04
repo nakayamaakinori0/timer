@@ -45,7 +45,11 @@ export default function Home() {
   useEffect(() => {
     if (isActive === true && time === 0) {
       // alert("Time's up!");
-      audio.current = new Audio("/mixkit-tick-tock-clock-timer-1045.wav");
+      audio.current = new Audio(
+        "/G線上のアリア：ヨハン・セバスチャン・バッハ-効果音.mp3"
+      );
+      audio.current.loop = true;
+      audio.current.autoplay = true;
       audio.current.play();
       window.addEventListener("click", stopAudio);
     }
