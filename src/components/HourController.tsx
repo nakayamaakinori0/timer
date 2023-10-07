@@ -1,5 +1,5 @@
 import styles from "@/styles/Home.module.css";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useInteractJS } from "@/hooks/useInteractJS";
 
 interface HourControllerProps {
@@ -19,6 +19,7 @@ export default function HourController({
   const barRef = useRef<HTMLDivElement | null>(null);
   const squareRef = useRef<HTMLDivElement | null>(null);
   const interact = useInteractJS(initPosition, minPosition, maxPosition);
+  const [isSquareActive, setIsSquareActive] = useState(false);
 
   const calcHour = (x_position: number) => {
     const hour = Math.round((x_position / interact.maxPosition.x) * 23);
@@ -39,26 +40,23 @@ export default function HourController({
     }
   }, []);
 
-        // square操作中はスクロールさせない。
-          useEffect(() => {
-            console.log("squareRef", squareRef.current);
-            const handleTouchStart = () => {
-              console.log("touchstart");
-              document.body.style.overflow = "hidden";
-              document.body.style.backgroundColor = "red";
-            };
-            const handleTouchEnd = () => {
-              console.log("touchend");
-              document.body.style.overflow = "scroll";
-              document.body.style.backgroundColor = "white";
-            };
-            squareRef.current?.addEventListener("touchstart", handleTouchStart);
-            squareRef.current?.addEventListener("touchend", handleTouchEnd);
-            return () => {
-              squareRef.current?.removeEventListener("touchstart", handleTouchStart);
-              squareRef.current?.removeEventListener("touchend", handleTouchEnd);
-            };
-          }, []);
+  // square操作中はスクロールさせない。
+  useEffect(() => {
+    if (isSquareActive) {
+      document.body.style.overflow = "hidden";
+      document.body.style.setProperty("-webkit-overflow", "hidden", "important"); // For iOS/Safari
+      document.body.style.backgroundColor = "red";
+    } else {
+      document.body.style.overflow = "scroll";
+      document.body.style.setProperty("-webkit-overflow", "scroll", "important"); // For iOS/Safari
+      document.body.style.backgroundColor = "white";
+    }
+    return () => {
+      document.body.style.overflow = "scroll";
+      document.body.style.setProperty("-webkit-overflow", "scroll", "important"); // For iOS/Safari
+      document.body.style.backgroundColor = "white";
+    };
+  }, [isSquareActive]);
 
   // Active→interactを無効化、InActive→interactを有効化
   useEffect(() => {
@@ -97,6 +95,12 @@ export default function HourController({
               ref={(elem) => {
                 interact.ref.current = elem;
                 squareRef.current = elem;
+              }}
+              onTouchStart={() => {
+                setIsSquareActive(true);
+              }}
+              onTouchEnd={() => {
+                setIsSquareActive(false);
               }}
               className={styles.square}
               style={{
