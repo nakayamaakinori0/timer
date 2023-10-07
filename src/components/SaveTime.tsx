@@ -38,21 +38,6 @@ export default function SaveTime({
   const [displaySaveArr, setDisplaySaveArr] = useState<DisplayTimeObj[]>([]);
   const [disableSave, setDisableSave] = useState<boolean>(false);
 
-  const saveHandler = useCallback(() => {
-    if (
-      saveArr[saveArr.length - 1]?.hour === hour &&
-      saveArr[saveArr.length - 1]?.minute === minute &&
-      saveArr[saveArr.length - 1]?.second === second
-    ) {
-      return null;
-    }
-    if (saveArr.length >= 3) {
-      return null;
-    }
-    // もし、saveArrの最後の要素が現在の時間と同じだったら、保存しない。
-    setSaveArr([...saveArr, { hour: hour, minute: minute, second: second }]);
-  }, [hour, minute, second, saveArr]);
-
   useEffect(() => {
     if (saveArr.length >= 3) {
       setDisableSave(true);
@@ -73,6 +58,14 @@ export default function SaveTime({
     );
   }, [saveArr]);
 
+  const saveHandler = useCallback(() => {
+    // もし、saveArrの要素が3つ以上あったら、保存しない。
+    if (saveArr.length >= 3) {
+      return null;
+    }
+    setSaveArr([...saveArr, { hour: hour, minute: minute, second: second }]);
+  }, [hour, minute, second, saveArr]);
+
   const loadHandler = useCallback(
     (key: number) => {
       setHour(saveArr[key].hour);
@@ -89,19 +82,27 @@ export default function SaveTime({
   return (
     <div>
       <div className={styles.saveTimeButtons}>
-        <button className={styles.saveButton} onClick={saveHandler} disabled={isActive || disableSave}>
+        <button
+          className={styles.saveButton}
+          onClick={saveHandler}
+          disabled={isActive || disableSave}
+        >
           save
         </button>
-        <button className={styles.delButton} onClick={deleteHandler} disabled={isActive}>
+        <button
+          className={styles.delButton}
+          onClick={deleteHandler}
+          disabled={isActive}
+        >
           del
         </button>
       </div>
-      <div className={styles.saveTimes}>
+      <div className={styles.savedTimes}>
         {displaySaveArr?.map((obj, key) => {
           return (
             <button
               key={key}
-              className={styles.saveTime}
+              className={styles.savedTime}
               onClick={() => {
                 loadHandler(key);
               }}
