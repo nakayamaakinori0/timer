@@ -102,6 +102,9 @@ export default function HourController({
               onTouchEnd={() => {
                 setIsSquareActive(false);
               }}
+              onTouchMove={(e) => {
+                e.preventDefault();
+              }}
               className={styles.square}
               style={{
                 ...interact.style,
