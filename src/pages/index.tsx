@@ -79,7 +79,7 @@ export default function Home() {
         } else {
           setTime(remainTime);
         }
-      }, 1000);
+      }, 500);
     }
     return () => clearInterval(interval);
   }, [isActive, targetTime]);
