@@ -99,10 +99,6 @@ export default function SecondController({
               onTouchEnd={() => {
                 setIsSquareActive(false);
               }}
-              // for iOS スクロールを防ぐ
-              onTouchMove={(e) => {
-                e.preventDefault();
-              }}
               className={styles.square}
               style={{
                 ...interact.style,

@@ -59,6 +59,20 @@ export default function HourController({
     };
   }, [isSquareActive]);
 
+  const rejectScroll = (e: TouchEvent) => {
+    if (isSquareActive) {
+      e.preventDefault();
+    }
+  };
+
+  // モバイルはスクロールさせない。
+  useEffect(() => {
+    document.addEventListener("touchmove", rejectScroll, { passive: false });
+    return () => {
+      document.removeEventListener("touchmove", rejectScroll);
+    };
+  }, []);
+
   // Active→interactを無効化、InActive→interactを有効化
   useEffect(() => {
     if (isActive) {
@@ -102,11 +116,6 @@ export default function HourController({
               }}
               onTouchEnd={() => {
                 setIsSquareActive(false);
-              }}
-              // for iOS スクロールを防ぐ
-              onTouchMove={(e) => {
-                console.log("onTouchMove", e);
-                e.preventDefault();
               }}
               className={styles.square}
               style={{

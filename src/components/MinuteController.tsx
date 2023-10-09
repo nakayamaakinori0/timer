@@ -99,11 +99,6 @@ export default function MinuteController({
               onTouchEnd={() => {
                 setIsSquareActive(false);
               }}
-              // for iOS スクロールを防ぐ
-              onTouchMove={(e) => {
-                console.log("onTouchMove", e);
-                e.preventDefault();
-              }}
               className={styles.square}
               style={{
                 ...interact.style,
