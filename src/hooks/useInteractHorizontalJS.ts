@@ -11,7 +11,10 @@ const initPosition = {
 };
 // TODO: min, maxがnullなら無制限にする
 // TODO: min, maxをyにも対応させる
-export function useInteractJS(
+// interactjs、	Androidだと正常に動かない、ちょっと動かすと止まる
+// chrome開発者ツールのスマホモードだとiOS, Android関わらずちょっと動かすと止まる
+// iOS端末上でのみモバイルは正常に動く
+export function useInteractHorizontalJS(
   position: Partial<typeof initPosition> = initPosition,
   minPosition: any = initPosition,
   maxPosition: any = initPosition
@@ -39,25 +42,25 @@ export function useInteractJS(
       })
       .on("dragmove", (event) => {
         x += event.dx;
-        // y += event.dy;
+        y += event.dy;
         if (x >= _minPosition.x && x <= _maxPosition.x) {
           setPosition({
-            x,
-            y,
+            x: x,
+            y: _minPosition.y,
           });
         }
 
         if (x < _minPosition.x) {
           setPosition({
             x: _minPosition.x,
-            y,
+            y: _minPosition.y,
           });
         }
 
         if (x > _maxPosition.x) {
           setPosition({
             x: _maxPosition.x,
-            y,
+            y: _minPosition.y,
           });
         }
       });

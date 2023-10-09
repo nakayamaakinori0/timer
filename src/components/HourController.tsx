@@ -1,6 +1,6 @@
 import styles from "@/styles/Home.module.css";
 import { useRef, useEffect, useState } from "react";
-import { useInteractJS } from "@/hooks/useInteractJS";
+import { useInteractHorizontalJS } from "@/hooks/useInteractHorizontalJS";
 
 interface HourControllerProps {
   isActive: boolean;
@@ -18,7 +18,11 @@ export default function HourController({
   const maxPosition = { x: 0, y: 0 };
   const barRef = useRef<HTMLDivElement | null>(null);
   const squareRef = useRef<HTMLDivElement | null>(null);
-  const interact = useInteractJS(initPosition, minPosition, maxPosition);
+  const interact = useInteractHorizontalJS(
+    initPosition,
+    minPosition,
+    maxPosition
+  );
   const [isSquareActive, setIsSquareActive] = useState(false);
 
   const calcHour = (x_position: number) => {
@@ -44,16 +48,13 @@ export default function HourController({
   useEffect(() => {
     if (isSquareActive) {
       document.body.style.overflow = "hidden";
-      document.body.style.setProperty("-webkit-overflow", "hidden", "important"); // For iOS/Safari
       document.body.style.backgroundColor = "red";
     } else {
       document.body.style.overflow = "scroll";
-      document.body.style.setProperty("-webkit-overflow", "scroll", "important"); // For iOS/Safari
       document.body.style.backgroundColor = "white";
     }
     return () => {
       document.body.style.overflow = "scroll";
-      document.body.style.setProperty("-webkit-overflow", "scroll", "important"); // For iOS/Safari
       document.body.style.backgroundColor = "white";
     };
   }, [isSquareActive]);
@@ -69,7 +70,7 @@ export default function HourController({
 
   // interact.position.xにhourを同期する。
   useEffect(() => {
-    const newHour = calcHour(interact.position.x) | 0;
+    const newHour = calcHour(interact.position.x) || 0;
     if (newHour !== hour) {
       setHour(newHour);
     }
@@ -77,7 +78,7 @@ export default function HourController({
 
   // hourにinteract.position.xを同期する。
   useEffect(() => {
-    const newPosition = { x: calcPosition(hour), y: 0 };
+    const newPosition = { x: calcPosition(hour), y: interact.position.y };
     if (newPosition.x !== interact.position.x) {
       interact.setPosition(newPosition);
     }
@@ -101,6 +102,11 @@ export default function HourController({
               }}
               onTouchEnd={() => {
                 setIsSquareActive(false);
+              }}
+              // for iOS スクロールを防ぐ
+              onTouchMove={(e) => {
+                console.log("onTouchMove", e);
+                e.preventDefault();
               }}
               className={styles.square}
               style={{

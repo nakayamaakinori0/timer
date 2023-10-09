@@ -1,6 +1,6 @@
 import styles from "@/styles/Home.module.css";
-import { useRef, useEffect, useLayoutEffect } from "react";
-import { useInteractJS } from "@/hooks/useInteractJS";
+import { useRef, useEffect, useState } from "react";
+import { useInteractHorizontalJS } from "@/hooks/useInteractHorizontalJS";
 
 interface SecondControllerProps {
   isActive: boolean;
@@ -18,7 +18,12 @@ export default function SecondController({
   const maxPosition = { x: 0, y: 0 };
   const barRef = useRef<HTMLDivElement | null>(null);
   const squareRef = useRef<HTMLDivElement | null>(null);
-  const interact = useInteractJS(initPosition, minPosition, maxPosition);
+  const interact = useInteractHorizontalJS(
+    initPosition,
+    minPosition,
+    maxPosition
+  );
+  const [isSquareActive, setIsSquareActive] = useState(false);
 
   const calcSecond = (x_position: number) => {
     const second = Math.round((x_position / interact.maxPosition.x) * 59);
@@ -40,19 +45,18 @@ export default function SecondController({
 
   // square操作中はスクロールさせない。
   useEffect(() => {
-    const handleTouchStart = () => {
-      document.body.style.overflowY = "hidden";
-    };
-    const handleTouchEnd = () => {
-      document.body.style.overflowY = "scroll";
-    };
-    squareRef.current?.addEventListener("touchstart", handleTouchStart);
-    squareRef.current?.addEventListener("touchend", handleTouchEnd);
+    if (isSquareActive) {
+      document.body.style.overflow = "hidden";
+      document.body.style.backgroundColor = "red";
+    } else {
+      document.body.style.overflow = "scroll";
+      document.body.style.backgroundColor = "white";
+    }
     return () => {
-      squareRef.current?.removeEventListener("touchstart", handleTouchStart);
-      squareRef.current?.removeEventListener("touchend", handleTouchEnd);
+      document.body.style.overflow = "scroll";
+      document.body.style.backgroundColor = "white";
     };
-  }, []);
+  }, [isSquareActive]);
 
   useEffect(() => {
     if (isActive) {
@@ -63,14 +67,14 @@ export default function SecondController({
   }, [isActive, interact.position]);
 
   useEffect(() => {
-    const newSecond = calcSecond(interact.position.x) | 0;
+    const newSecond = calcSecond(interact.position.x) || 0;
     if (newSecond !== second) {
       setSecond(newSecond);
     }
   }, [interact.position.x]);
 
   useEffect(() => {
-    const newPosition = { x: calcPosition(second), y: 0 };
+    const newPosition = { x: calcPosition(second), y: interact.position.y };
     if (newPosition.x !== interact.position.x) {
       interact.setPosition(newPosition);
     }
@@ -88,6 +92,16 @@ export default function SecondController({
               ref={(elem) => {
                 interact.ref.current = elem;
                 squareRef.current = elem;
+              }}
+              onTouchStart={() => {
+                setIsSquareActive(true);
+              }}
+              onTouchEnd={() => {
+                setIsSquareActive(false);
+              }}
+              // for iOS スクロールを防ぐ
+              onTouchMove={(e) => {
+                e.preventDefault();
               }}
               className={styles.square}
               style={{
