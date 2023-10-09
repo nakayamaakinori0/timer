@@ -1,5 +1,5 @@
 import styles from "@/styles/Home.module.css";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 import { useInteractHorizontalJS } from "@/hooks/useInteractHorizontalJS";
 
 interface MinuteControllerProps {
@@ -23,7 +23,6 @@ export default function MinuteController({
     minPosition,
     maxPosition
   );
-  const [isSquareActive, setIsSquareActive] = useState(false);
 
   const calcMinute = (x_position: number) => {
     const minute = Math.round((x_position / interact.maxPosition.x) * 59);
@@ -42,21 +41,6 @@ export default function MinuteController({
       });
     }
   }, []);
-
-  // square操作中はスクロールさせない。
-  useEffect(() => {
-    if (isSquareActive) {
-      document.body.style.overflow = "hidden";
-      document.body.style.backgroundColor = "red";
-    } else {
-      document.body.style.overflow = "scroll";
-      document.body.style.backgroundColor = "white";
-    }
-    return () => {
-      document.body.style.overflow = "scroll";
-      document.body.style.backgroundColor = "white";
-    };
-  }, [isSquareActive]);
 
   useEffect(() => {
     if (isActive) {
@@ -92,12 +76,6 @@ export default function MinuteController({
               ref={(elem) => {
                 interact.ref.current = elem;
                 squareRef.current = elem;
-              }}
-              onTouchStart={() => {
-                setIsSquareActive(true);
-              }}
-              onTouchEnd={() => {
-                setIsSquareActive(false);
               }}
               className={styles.square}
               style={{

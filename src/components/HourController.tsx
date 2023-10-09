@@ -1,5 +1,5 @@
 import styles from "@/styles/Home.module.css";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 import { useInteractHorizontalJS } from "@/hooks/useInteractHorizontalJS";
 
 interface HourControllerProps {
@@ -23,7 +23,6 @@ export default function HourController({
     minPosition,
     maxPosition
   );
-  const [isSquareActive, setIsSquareActive] = useState(false);
 
   const calcHour = (x_position: number) => {
     const hour = Math.round((x_position / interact.maxPosition.x) * 23);
@@ -42,35 +41,6 @@ export default function HourController({
         y: 0,
       });
     }
-  }, []);
-
-  // square操作中はスクロールさせない。
-  useEffect(() => {
-    if (isSquareActive) {
-      document.body.style.overflow = "hidden";
-      document.body.style.backgroundColor = "red";
-    } else {
-      document.body.style.overflow = "scroll";
-      document.body.style.backgroundColor = "white";
-    }
-    return () => {
-      document.body.style.overflow = "scroll";
-      document.body.style.backgroundColor = "white";
-    };
-  }, [isSquareActive]);
-
-  const rejectScroll = (e: TouchEvent) => {
-    if (isSquareActive) {
-      e.preventDefault();
-    }
-  };
-
-  // モバイルはスクロールさせない。
-  useEffect(() => {
-    document.addEventListener("touchmove", rejectScroll, { passive: false });
-    return () => {
-      document.removeEventListener("touchmove", rejectScroll);
-    };
   }, []);
 
   // Active→interactを無効化、InActive→interactを有効化
@@ -110,12 +80,6 @@ export default function HourController({
               ref={(elem) => {
                 interact.ref.current = elem;
                 squareRef.current = elem;
-              }}
-              onTouchStart={() => {
-                setIsSquareActive(true);
-              }}
-              onTouchEnd={() => {
-                setIsSquareActive(false);
               }}
               className={styles.square}
               style={{
