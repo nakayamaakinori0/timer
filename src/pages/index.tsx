@@ -65,15 +65,23 @@ export default function Home() {
     }
   }, [isActive]);
 
+  const confirmBeforeUnload = useCallback((e: BeforeUnloadEvent) => {
+    const confirmationMessage = "Are you sure you want to leave?";
+    e.preventDefault();
+    e.returnValue = confirmationMessage;
+    return confirmationMessage;
+  }, []);
+
+
   // count down中はページを離れるときに確認を出す
   useEffect(() => {
     if (isActive) {
-      window.addEventListener("beforeunload", (e: BeforeUnloadEvent) => {
-        const confirmationMessage = "Are you sure you want to leave?";
-        e.preventDefault();
-        e.returnValue = confirmationMessage;
-        return confirmationMessage;
-      });
+      window.addEventListener("beforeunload", confirmBeforeUnload);
+    } else {
+      window.removeEventListener("beforeunload", confirmBeforeUnload);
+    }
+    return () => {
+      window.removeEventListener("beforeunload", confirmBeforeUnload);
     }
   }, [isActive]);
 
