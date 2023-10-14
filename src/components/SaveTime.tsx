@@ -38,6 +38,16 @@ export default function SaveTime({
   const [displaySaveArr, setDisplaySaveArr] = useState<DisplayTimeObj[]>([]);
   const [disableSave, setDisableSave] = useState<boolean>(false);
 
+// localStorageに保存されているsaveArrを読み込む
+  useEffect(() => {
+    const saveArrJSON = window.localStorage.getItem("saveArr");
+    if (saveArrJSON) {
+      const saveArrFromLocalStorage = JSON.parse(saveArrJSON);
+      setSaveArr(saveArrFromLocalStorage);
+    };
+  }, []);
+
+// saveArrの要素が3つ以上あったら、saveボタンを無効化する
   useEffect(() => {
     if (saveArr.length >= 3) {
       setDisableSave(true);
@@ -46,6 +56,7 @@ export default function SaveTime({
     }
   }, [saveArr]);
 
+// saveArrの要素が変更されたら、表示用のsaveArrを更新する
   useEffect(() => {
     setDisplaySaveArr(
       saveArr.map((obj) => {
@@ -63,7 +74,9 @@ export default function SaveTime({
     if (saveArr.length >= 3) {
       return null;
     }
-    setSaveArr([...saveArr, { hour: hour, minute: minute, second: second }]);
+    const newSaveArr = [...saveArr, { hour: hour, minute: minute, second: second }];
+    setSaveArr(newSaveArr);
+    window.localStorage.setItem("saveArr", JSON.stringify(newSaveArr));
   }, [hour, minute, second, saveArr]);
 
   const loadHandler = useCallback(
@@ -76,7 +89,9 @@ export default function SaveTime({
   );
 
   const deleteHandler = useCallback(() => {
-    setSaveArr(saveArr.slice(0, saveArr.length - 1));
+    const newSaveArr = saveArr.slice(0, saveArr.length - 1);
+    setSaveArr(newSaveArr);
+    window.localStorage.setItem("saveArr", JSON.stringify(newSaveArr));
   }, [saveArr]);
 
   return (

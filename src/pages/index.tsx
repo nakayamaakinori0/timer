@@ -65,6 +65,18 @@ export default function Home() {
     }
   }, [isActive]);
 
+  // count down中はページを離れるときに確認を出す
+  useEffect(() => {
+    if (isActive) {
+      window.addEventListener("beforeunload", (e: BeforeUnloadEvent) => {
+        const confirmationMessage = "Are you sure you want to leave?";
+        e.preventDefault();
+        e.returnValue = confirmationMessage;
+        return confirmationMessage;
+      });
+    }
+  }, [isActive]);
+
   // タイマーのカウントダウン
   // 1秒ごとにtargetTimeと現在時刻の差を計算して、timeを更新する。
   useEffect(() => {
