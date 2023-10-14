@@ -45,13 +45,12 @@ export default function Home() {
   useEffect(() => {
     if (isActive === true && time === 0) {
       // alert("Time's up!");
-      audio.current = new Audio(
-        "/G線上のアリア：ヨハン・セバスチャン・バッハ-効果音.mp3"
-      );
+      if (audio.current) {
       audio.current.loop = true;
       audio.current.autoplay = true;
       audio.current.play();
       window.addEventListener("click", stopAudio);
+      }
     }
     return () => {
       window.removeEventListener("click", stopAudio);
@@ -161,6 +160,9 @@ export default function Home() {
       return null;
     } else {
       setIsActive(true);
+      audio.current = new Audio(
+        "/G線上のアリア：ヨハン・セバスチャン・バッハ-効果音.mp3"
+      );
     }
   }, [time]);
 
