@@ -17,7 +17,6 @@ export default function Home() {
   const [isActive, setIsActive] = useState<boolean>(false);
   const [time, setTime] = useState<number>(0);
   const audio = useRef<HTMLAudioElement | null>(null);
-  const [targetTime, setTargetTime] = useState<number>(0);
 
   // 表示用のhour, minute, second
   const [displayHour, setDisplayHour] = useState<string>("00");
@@ -57,13 +56,6 @@ export default function Home() {
     };
   }, [isActive, time]);
 
-  // Startした時、targetTimeを設定する。
-  useEffect(() => {
-    if (isActive) {
-      setTargetTime(Date.now() + time * 1000);
-    }
-  }, [isActive]);
-
   const confirmBeforeUnload = useCallback((e: BeforeUnloadEvent) => {
     const confirmationMessage = "Are you sure you want to leave?";
     e.preventDefault();
@@ -87,8 +79,10 @@ export default function Home() {
   // タイマーのカウントダウン
   // 1秒ごとにtargetTimeと現在時刻の差を計算して、timeを更新する。
   useEffect(() => {
-    let interval: any = null;
+    let interval: NodeJS.Timeout | undefined = undefined;
     if (isActive) {
+      const msec = Date.now() % 1000;
+      const targetTime = Date.now() + msec + time * 1000;
       interval = setInterval(() => {
         const now = Date.now();
         const remainTime = Math.floor((targetTime - now) / 1000);
@@ -98,10 +92,10 @@ export default function Home() {
         } else {
           setTime(remainTime);
         }
-      }, 500);
+      }, 1000);
     }
     return () => clearInterval(interval);
-  }, [isActive, targetTime]);
+  }, [isActive]);
 
   // 時間の入力を秒に変換
   useEffect(() => {
