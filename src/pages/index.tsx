@@ -17,6 +17,9 @@ export default function Home() {
   const [isActive, setIsActive] = useState<boolean>(false);
   const [time, setTime] = useState<number>(0);
   const audio = useRef<HTMLAudioElement | null>(null);
+  const limSec = 59;
+  const limMin = 59;
+  const limHour = 23;
 
   // 表示用のhour, minute, second
   const [displayHour, setDisplayHour] = useState<string>("00");
@@ -45,10 +48,10 @@ export default function Home() {
     if (isActive === true && time === 0) {
       // alert("Time's up!");
       if (audio.current) {
-      audio.current.loop = true;
-      audio.current.autoplay = true;
-      audio.current.play();
-      window.addEventListener("click", stopAudio);
+        audio.current.loop = true;
+        audio.current.autoplay = true;
+        audio.current.play();
+        window.addEventListener("click", stopAudio);
       }
     }
     return () => {
@@ -63,7 +66,6 @@ export default function Home() {
     return confirmationMessage;
   }, []);
 
-
   // count down中はページを離れるときに確認を出す
   useEffect(() => {
     if (isActive) {
@@ -73,7 +75,7 @@ export default function Home() {
     }
     return () => {
       window.removeEventListener("beforeunload", confirmBeforeUnload);
-    }
+    };
   }, [isActive]);
 
   // タイマーのカウントダウン
@@ -122,24 +124,24 @@ export default function Home() {
   }, [time]);
 
   const hourChangeHandler = useCallback((e: { target: { value: any } }) => {
-    if (Number(e.target.value) > 23) {
-      setHour(23);
+    if (Number(e.target.value) > limHour) {
+      setHour(limHour);
     } else {
       setHour(Number(e.target.value));
     }
   }, []);
 
   const minuteChangeHandler = useCallback((e: { target: { value: any } }) => {
-    if (Number(e.target.value) > 59) {
-      setMinute(59);
+    if (Number(e.target.value) > limMin) {
+      setMinute(limMin);
     } else {
       setMinute(Number(e.target.value));
     }
   }, []);
 
   const secondChangeHandler = useCallback((e: { target: { value: any } }) => {
-    if (Number(e.target.value) > 59) {
-      setSecond(59);
+    if (Number(e.target.value) > limSec) {
+      setSecond(limSec);
     } else {
       setSecond(Number(e.target.value));
     }
