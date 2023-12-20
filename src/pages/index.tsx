@@ -9,6 +9,7 @@ import HourController from "@/components/HourController";
 import MinuteController from "@/components/MinuteController";
 import SecondController from "@/components/SecondController";
 import SaveTime from "@/components/SaveTime";
+import Nortification from "@/components/Nortification";
 
 export default function Home() {
   const [hour, setHour] = useState<number>(0);
@@ -157,13 +158,14 @@ export default function Home() {
     } else {
       setIsActive(true);
       audio.current = new Audio(
-        "/G線上のアリア：ヨハン・セバスチャン・バッハ-効果音.mp3"
+        "/G線上のアリア：ヨハン・セバスチャン・バッハ-効果音.mp3",
       );
     }
   }, [time]);
 
   return (
     <div className={styles.container}>
+      <Nortification />
       <div>
         <form className={styles.time}>
           <Hour
