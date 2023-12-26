@@ -157,9 +157,7 @@ export default function Home() {
       return null;
     } else {
       setIsActive(true);
-      audio.current = new Audio(
-        "/G線上のアリア：ヨハン・セバスチャン・バッハ-効果音.mp3",
-      );
+      audio.current = new Audio("alarm-clock-short-6402.mp3");
     }
   }, [time]);
 
