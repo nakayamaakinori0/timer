@@ -9,7 +9,8 @@ import HourController from "@/components/HourController";
 import MinuteController from "@/components/MinuteController";
 import SecondController from "@/components/SecondController";
 import SaveTime from "@/components/SaveTime";
-import Nortification from "@/components/Nortification";
+import NotificationButton from "@/components/NotificationButton";
+import React from "react";
 
 export default function Home() {
   const [hour, setHour] = useState<number>(0);
@@ -163,7 +164,7 @@ export default function Home() {
 
   return (
     <div className={styles.container}>
-      <Nortification />
+      <NotificationButton />
       <div>
         <form className={styles.time}>
           <Hour
