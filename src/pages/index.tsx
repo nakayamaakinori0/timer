@@ -10,6 +10,8 @@ import MinuteController from "@/components/MinuteController";
 import SecondController from "@/components/SecondController";
 import SaveTime from "@/components/SaveTime";
 import NotificationButton from "@/components/NotificationButton";
+import useTimer from "@/hooks/useTimer";
+import useAudio from "@/hooks/useAudio";
 import React from "react";
 
 export default function Home() {
@@ -22,6 +24,9 @@ export default function Home() {
   const limSec = 59;
   const limMin = 59;
   const limHour = 23;
+  const usetimer = useTimer();
+  const path = "alarm-clock-short-6402.mp3";
+  const useaudio = useAudio({ path });
 
   // 表示用のhour, minute, second
   const [displayHour, setDisplayHour] = useState<string>("00");
