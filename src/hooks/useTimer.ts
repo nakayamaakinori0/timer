@@ -40,5 +40,5 @@ export default function useTimer() {
     setTimerOn(false);
   };
 
-  return { time, timerOn, startTimer, stopTimer, resetTimer };
+  return { time, setTime, timerOn, startTimer, stopTimer, resetTimer };
 }

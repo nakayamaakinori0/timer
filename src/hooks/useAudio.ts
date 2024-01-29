@@ -1,6 +1,6 @@
 import { useRef } from "react";
 
-export default function useaudio({ path }: { path: string }) {
+export default function useaudio(path: string) {
   const audio = useRef<HTMLAudioElement | null>(null);
   const load = () => {
     audio.current = new Audio(path);

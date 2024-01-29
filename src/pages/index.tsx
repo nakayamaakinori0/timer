@@ -24,9 +24,6 @@ export default function Home() {
   const limSec = 59;
   const limMin = 59;
   const limHour = 23;
-  const usetimer = useTimer();
-  const path = "alarm-clock-short-6402.mp3";
-  const useaudio = useAudio({ path });
 
   // 表示用のhour, minute, second
   const [displayHour, setDisplayHour] = useState<string>("00");
