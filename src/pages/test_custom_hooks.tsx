@@ -3,28 +3,34 @@ import useTimer from "../hooks/useTimer";
 import useAudio from "../hooks/useAudio";
 
 export default function TestCustomHooks() {
-  const { time, setTime, timerOn, startTimer, stopTimer, resetTimer } =
-    useTimer();
+  const timer = useTimer();
 
   useEffect(() => {
-    setTime(1000);
+    timer.setTime(1000);
   }, []);
 
   useEffect(() => {
-    startTimer();
-  }, [time]);
+    timer.start();
+  }, [timer.time]);
 
-  console.log("time", time);
-  console.log("timerOn", timerOn);
+  console.log("time", timer.time);
+  console.log("timerOn", timer.isActive);
 
-  const useaudio = useAudio("alarm-clock-short-6402.mp3");
+  const { load, play, stop, loaded } = useAudio("alarm-clock-short-6402.mp3");
 
   return (
     <>
-      <button onClick={startTimer}>on</button>
-      <button onClick={stopTimer}>off</button>
-      <button onClick={resetTimer}>reset</button>
-      <div>{time}</div>
+      <h1>TestCustomHooks</h1>
+      <h2>useTimer</h2>
+      <button onClick={timer.start}>on</button>
+      <button onClick={timer.stop}>off</button>
+      <button onClick={timer.reset}>reset</button>
+      <div>{timer.time}</div>
+      <h2>useAudio</h2>
+      <button onClick={load}>load</button>
+      <button onClick={play}>play</button>
+      <button onClick={stop}>stop</button>
+      <div>{`loaded:${loaded}`}</div>
     </>
   );
 }

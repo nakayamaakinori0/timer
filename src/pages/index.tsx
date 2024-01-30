@@ -4,23 +4,23 @@ import Second from "@/components/Second";
 import StartButton from "@/components/StartButton";
 import StopButton from "@/components/StopButton";
 import styles from "@/styles/Home.module.css";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import HourController from "@/components/HourController";
 import MinuteController from "@/components/MinuteController";
 import SecondController from "@/components/SecondController";
 import SaveTime from "@/components/SaveTime";
-import NotificationButton from "@/components/NotificationButton";
 import useTimer from "@/hooks/useTimer";
 import useAudio from "@/hooks/useAudio";
+import useNotification from "@/hooks/useNotification";
 import React from "react";
 
 export default function Home() {
   const [hour, setHour] = useState<number>(0);
   const [minute, setMinute] = useState<number>(0);
   const [second, setSecond] = useState<number>(0);
-  const [isActive, setIsActive] = useState<boolean>(false);
-  const [time, setTime] = useState<number>(0);
-  const audio = useRef<HTMLAudioElement | null>(null);
+  const timer = useTimer();
+  const audio = useAudio("alarm-clock-short-6402.mp3");
+  const { showNotification } = useNotification();
   const limSec = 59;
   const limMin = 59;
   const limHour = 23;
@@ -38,30 +38,19 @@ export default function Home() {
     setDisplaySecond(second.toString().padStart(2, "0"));
   }, [hour, minute, second]);
 
-  // タイマーを止める
-  const stopAudio = useCallback(() => {
-    audio.current?.pause();
-    if (audio.current) {
-      audio.current.currentTime = 0;
-    }
-    setIsActive(false);
-  }, [audio, audio?.current]);
-
   // タイマーが0になったときにアラームを鳴らす
   useEffect(() => {
-    if (isActive === true && time === 0) {
-      // alert("Time's up!");
-      if (audio.current) {
-        audio.current.loop = true;
-        audio.current.autoplay = true;
-        audio.current.play();
-        window.addEventListener("click", stopAudio);
+    if (timer.isActive === true && timer.time === 0) {
+      if (audio.loaded) {
+        audio.play();
+        showNotification({ title: "timer", body: "times up!" });
+        window.addEventListener("click", stopHandler);
       }
     }
     return () => {
-      window.removeEventListener("click", stopAudio);
+      window.removeEventListener("click", stopHandler);
     };
-  }, [isActive, time]);
+  }, [timer.isActive, timer.time, audio.loaded]);
 
   const confirmBeforeUnload = useCallback((e: BeforeUnloadEvent) => {
     const confirmationMessage = "Are you sure you want to leave?";
@@ -72,7 +61,7 @@ export default function Home() {
 
   // count down中はページを離れるときに確認を出す
   useEffect(() => {
-    if (isActive) {
+    if (timer.isActive) {
       window.addEventListener("beforeunload", confirmBeforeUnload);
     } else {
       window.removeEventListener("beforeunload", confirmBeforeUnload);
@@ -80,42 +69,21 @@ export default function Home() {
     return () => {
       window.removeEventListener("beforeunload", confirmBeforeUnload);
     };
-  }, [isActive]);
-
-  // タイマーのカウントダウン
-  // 1秒ごとにtargetTimeと現在時刻の差を計算して、timeを更新する。
-  useEffect(() => {
-    let interval: NodeJS.Timeout | undefined = undefined;
-    if (isActive) {
-      const msec = Date.now() % 1000;
-      const targetTime = Date.now() + msec + time * 1000;
-      interval = setInterval(() => {
-        const now = Date.now();
-        const remainTime = Math.floor((targetTime - now) / 1000);
-        if (remainTime <= 0) {
-          clearInterval(interval);
-          setTime(0);
-        } else {
-          setTime(remainTime);
-        }
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [isActive]);
+  }, [timer.isActive]);
 
   // 時間の入力を秒に変換
   useEffect(() => {
     const newTime = hour * 3600 + minute * 60 + second;
-    if (newTime !== time) {
-      setTime(newTime);
+    if (newTime !== timer.time) {
+      timer.setTime(newTime);
     }
   }, [hour, minute, second]);
 
   // timeの変更をhour, minute, secondに反映
   useEffect(() => {
-    const newHour = Math.floor(time / 3600);
-    const newMinute = Math.floor((time % 3600) / 60);
-    const newSecond = Math.floor((time % 3600) % 60);
+    const newHour = Math.floor(timer.time / 3600);
+    const newMinute = Math.floor((timer.time % 3600) / 60);
+    const newSecond = Math.floor((timer.time % 3600) % 60);
     if (newHour !== hour) {
       setHour(newHour);
     }
@@ -125,7 +93,7 @@ export default function Home() {
     if (newSecond !== second) {
       setSecond(newSecond);
     }
-  }, [time]);
+  }, [timer.time]);
 
   const hourChangeHandler = useCallback((e: { target: { value: any } }) => {
     if (Number(e.target.value) > limHour) {
@@ -151,43 +119,43 @@ export default function Home() {
     }
   }, []);
 
-  const stopHandler = useCallback(() => {
-    stopAudio();
-  }, [audio, audio?.current, stopAudio]);
+  const stopHandler = () => {
+    audio.stop();
+    timer.stop();
+  };
 
   const startHandler = useCallback(() => {
-    if (time === 0) {
+    if (timer.time === 0) {
       return null;
     } else {
-      setIsActive(true);
-      audio.current = new Audio("alarm-clock-short-6402.mp3");
+      timer.start();
+      audio.load();
     }
-  }, [time]);
+  }, [timer.time]);
 
   return (
     <div className={styles.container}>
-      <NotificationButton />
       <div>
         <form className={styles.time}>
           <Hour
             displayHour={displayHour}
             hourChangeHandler={hourChangeHandler}
-            isActive={isActive}
+            isActive={timer.isActive}
           ></Hour>
           <span>:</span>
           <Minute
             displayMinute={displayMinute}
             minuteChangeHandler={minuteChangeHandler}
-            isActive={isActive}
+            isActive={timer.isActive}
           ></Minute>
           <span>:</span>
           <Second
             displaySecond={displaySecond}
             secondChangeHandler={secondChangeHandler}
-            isActive={isActive}
+            isActive={timer.isActive}
           ></Second>
           <span className={styles.containerActiveButton}>
-            {isActive ? (
+            {timer.isActive ? (
               <StopButton stopHandler={stopHandler}></StopButton>
             ) : (
               <StartButton startHandler={startHandler}></StartButton>
@@ -196,17 +164,17 @@ export default function Home() {
         </form>
         <div className={styles.controllerContainer}>
           <HourController
-            isActive={isActive}
+            isActive={timer.isActive}
             setHour={setHour}
             hour={hour}
           ></HourController>
           <MinuteController
-            isActive={isActive}
+            isActive={timer.isActive}
             setMinute={setMinute}
             minute={minute}
           ></MinuteController>
           <SecondController
-            isActive={isActive}
+            isActive={timer.isActive}
             setSecond={setSecond}
             second={second}
           ></SecondController>
@@ -218,7 +186,7 @@ export default function Home() {
           setHour={setHour}
           setMinute={setMinute}
           setSecond={setSecond}
-          isActive={isActive}
+          isActive={timer.isActive}
         ></SaveTime>
       </div>
     </div>

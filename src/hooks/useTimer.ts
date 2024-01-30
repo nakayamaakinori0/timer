@@ -2,13 +2,13 @@ import { useState, useEffect } from "react";
 
 export default function useTimer() {
   const [time, setTime] = useState<number>(0);
-  const [timerOn, setTimerOn] = useState<boolean>(false);
+  const [isActive, setIsActive] = useState<boolean>(false);
 
   // タイマーのカウントダウン
   // 1秒ごとにtargetTimeと現在時刻の差を計算して、timeを更新する。
   useEffect(() => {
     let interval: NodeJS.Timeout | undefined = undefined;
-    if (timerOn) {
+    if (isActive) {
       const msec = Date.now() % 1000;
       const targetTime = Date.now() + msec + time * 1000;
       interval = setInterval(() => {
@@ -17,28 +17,27 @@ export default function useTimer() {
         if (remainTime <= 0) {
           clearInterval(interval);
           setTime(0);
-          setTimerOn(false);
         } else {
           setTime(remainTime);
         }
       }, 1000);
     }
     return () => clearInterval(interval);
-  }, [timerOn]);
+  }, [isActive]);
 
-  const startTimer = () => {
+  const start = () => {
     if (time <= 0) return;
-    setTimerOn(true);
+    setIsActive(true);
   };
 
-  const stopTimer = () => {
-    setTimerOn(false);
+  const stop = () => {
+    setIsActive(false);
   };
 
-  const resetTimer = () => {
+  const reset = () => {
     setTime(0);
-    setTimerOn(false);
+    setIsActive(false);
   };
 
-  return { time, setTime, timerOn, startTimer, stopTimer, resetTimer };
+  return { time, setTime, isActive, start, stop, reset };
 }
