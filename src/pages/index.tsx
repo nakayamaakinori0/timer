@@ -13,8 +13,11 @@ import useTimer from "@/hooks/useTimer";
 import useAudio from "@/hooks/useAudio";
 import useNotification from "@/hooks/useNotification";
 import React from "react";
+import useGetViewportSize from "@/hooks/useGetViewportSize";
 
 export default function Home() {
+  const viewportSize = useGetViewportSize();
+  console.log("viewportSize", viewportSize);
   const [hour, setHour] = useState<number>(0);
   const [minute, setMinute] = useState<number>(0);
   const [second, setSecond] = useState<number>(0);

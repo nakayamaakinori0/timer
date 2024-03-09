@@ -2,17 +2,57 @@
   display: flex;
   text-align: center;
   justify-content: center;
-  margin-top: 10em;
+  margin-top: 3em;
   margin-bottom: 10em;
+  font-size: 5px;
 }
-.time {
-  color: #322c28;
-  font-size: 2em;
+@media screen and (min-width: 500px) {
+  .container {
+    font-size: calc(40px - (900 / 1400) * 40px);
+  }
+}
+@media screen and (min-width: 800px) {
+  .container {
+    font-size: calc(40px - (600 / 1400) * 40px);
+  }
+}
+@media screen and (min-width: 1100px) {
+  .container {
+    /* font-size: calc(40px - (300 / 1400) * 40px); */
+    font-size: 31px;
+  }
+}
+@media screen and (min-width: 1400px) {
+  .container {
+    font-size: 40px;
+  }
+  .containerActiveButton {
+    /* display: inline-block; */
+    .activeButton {
+      color: #322c28;
+      /* margin-left: 1em; */
+      height: 4.5em;
+      width: 4.5em;
+      vertical-align: text-top;
+      margin-top: 0.5em;
+      border-radius: 8px;
+      border-width: 2px;
+      cursor: pointer;
+    }
+    .inactiveButton {
+      color: #322c28;
+      margin-left: 5px;
+      height: 38px;
+      vertical-align: text-top;
+      border-radius: 8px;
+      border-width: 1px;
+    }
+  }
 }
 .input {
   color: #322c28;
   text-align: center;
-  width: 41px;
+  width: 2em;
   outline: none;
   border: none;
   font-size: 1em;
@@ -30,27 +70,6 @@
 /* Firefox */
 .noSpin[type="number"] {
   -moz-appearance: textfield;
-}
-
-.containerActiveButton {
-  /* display: inline-block; */
-}
-.activeButton {
-  color: #322c28;
-  margin-left: 5px;
-  height: 38px;
-  vertical-align: text-top;
-  border-radius: 8px;
-  border-width: 1px;
-  cursor: pointer;
-}
-.inactiveButton {
-  color: #322c28;
-  margin-left: 5px;
-  height: 38px;
-  vertical-align: text-top;
-  border-radius: 8px;
-  border-width: 1px;
 }
 
 .controllerContainer {
@@ -102,7 +121,7 @@
   margin: 0 auto;
 }
 
-.saveButton{
+.saveButton {
   color: #322c28;
   height: 38px;
   vertical-align: text-top;
@@ -110,17 +129,15 @@
   border-width: 1px;
   width: 10em;
   cursor: pointer;
-
 }
 
-.delButton{
+.delButton {
   color: #322c28;
   height: 38px;
   vertical-align: text-top;
   border-radius: 8px;
   border-width: 1px;
   cursor: pointer;
-
 }
 
 .savedTimes {
