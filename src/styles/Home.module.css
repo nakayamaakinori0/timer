@@ -9,22 +9,22 @@
 
 @media screen and (min-width: 500px) {
   .container {
-    font-size: calc(35px * (500 / 1400));
+    font-size: calc(25px * (500 / 1400));
   }
 }
 @media screen and (min-width: 800px) {
   .container {
-    font-size: calc(35px * (800 / 1400));
+    font-size: calc(25px * (800 / 1400));
   }
 }
 @media screen and (min-width: 1100px) {
   .container {
-    font-size: calc(35px * (1100 / 1400));
+    font-size: calc(25px * (1100 / 1400));
   }
 }
 @media screen and (min-width: 1400px) {
   .container {
-    font-size: 35px;
+    font-size: 25px;
   }
 }
 
