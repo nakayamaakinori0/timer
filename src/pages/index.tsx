@@ -1,23 +1,18 @@
 import Hour from "@/components/Hour";
 import Minute from "@/components/Minute";
 import Second from "@/components/Second";
-import StartButton from "@/components/StartButton";
-import StopButton from "@/components/StopButton";
 import styles from "@/styles/Home.module.css";
 import { useState, useEffect, useCallback } from "react";
 import HourController from "@/components/HourController";
 import MinuteController from "@/components/MinuteController";
 import SecondController from "@/components/SecondController";
-import SaveTime from "@/components/SaveTime";
+import TimeButtons from "@/components/TimeButtons";
 import useTimer from "@/hooks/useTimer";
 import useAudio from "@/hooks/useAudio";
 import useNotification from "@/hooks/useNotification";
 import React from "react";
-import useGetViewportSize from "@/hooks/useGetViewportSize";
 
 export default function Home() {
-  const viewportSize = useGetViewportSize();
-  console.log("viewportSize", viewportSize);
   const [hour, setHour] = useState<number>(0);
   const [minute, setMinute] = useState<number>(0);
   const [second, setSecond] = useState<number>(0);
@@ -145,25 +140,18 @@ export default function Home() {
             hourChangeHandler={hourChangeHandler}
             isActive={timer.isActive}
           ></Hour>
-          <span>:</span>
+          <span className={styles.separator}>:</span>
           <Minute
             displayMinute={displayMinute}
             minuteChangeHandler={minuteChangeHandler}
             isActive={timer.isActive}
           ></Minute>
-          <span>:</span>
+          <span className={styles.separator}>:</span>
           <Second
             displaySecond={displaySecond}
             secondChangeHandler={secondChangeHandler}
             isActive={timer.isActive}
           ></Second>
-          <span className={styles.containerActiveButton}>
-            {timer.isActive ? (
-              <StopButton stopHandler={stopHandler}></StopButton>
-            ) : (
-              <StartButton startHandler={startHandler}></StartButton>
-            )}
-          </span>
         </form>
         <div className={styles.controllerContainer}>
           <HourController
@@ -182,7 +170,7 @@ export default function Home() {
             second={second}
           ></SecondController>
         </div>
-        <SaveTime
+        <TimeButtons
           hour={hour}
           minute={minute}
           second={second}
@@ -190,7 +178,9 @@ export default function Home() {
           setMinute={setMinute}
           setSecond={setSecond}
           isActive={timer.isActive}
-        ></SaveTime>
+          stopHandler={stopHandler}
+          startHandler={startHandler}
+        ></TimeButtons>
       </div>
     </div>
   );

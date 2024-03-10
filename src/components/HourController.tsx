@@ -21,7 +21,7 @@ export default function HourController({
   const interact = useInteractHorizontalJS(
     initPosition,
     minPosition,
-    maxPosition
+    maxPosition,
   );
 
   const calcHour = (x_position: number) => {
