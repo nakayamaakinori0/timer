@@ -70,7 +70,7 @@ export default function TimeButtons({
           minute: obj?.minute?.toString().padStart(2, "0"),
           second: obj?.second?.toString().padStart(2, "0"),
         };
-      }),
+      })
     );
   }, [saveArr]);
 
@@ -93,7 +93,7 @@ export default function TimeButtons({
       setMinute(saveArr[key].minute);
       setSecond(saveArr[key].second);
     },
-    [saveArr],
+    [saveArr]
   );
 
   const deleteHandler = useCallback(() => {
@@ -103,7 +103,7 @@ export default function TimeButtons({
   }, [saveArr]);
 
   return (
-    <div>
+    <div className={styles.containerButtons}>
       <div className={styles.timeButtons}>
         <TimerButton
           isActive={isActive}

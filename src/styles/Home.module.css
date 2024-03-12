@@ -98,6 +98,10 @@
   z-index: 1;
 }
 
+.containerButtons {
+  margin-top: 1em;
+}
+
 .timeButtons {
   display: flex;
   width: 20em;
