@@ -29,10 +29,12 @@ export default function TestSwiper() {
           type: "fraction",
         }}
       >
-        {dataArr.map((data) => {
+        {dataArr.map((data, key) => {
           return (
-            <SwiperSlide>
-              <div style={{ background: "gray", height: "300px" }}>{data}</div>
+            <SwiperSlide key={key}>
+              <div key={key} style={{ background: "gray", height: "300px" }}>
+                {data}
+              </div>
             </SwiperSlide>
           );
         })}
