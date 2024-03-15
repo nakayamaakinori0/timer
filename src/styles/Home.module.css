@@ -60,9 +60,10 @@
 .controllerContainer {
   display: flex;
   justify-content: space-around;
-  align-items: flex-start;
+  align-items: center;
   flex-direction: column;
   height: 10em;
+  margin-top: 1em;
 }
 
 .controller {
@@ -106,7 +107,6 @@
   display: flex;
   width: 20em;
   justify-content: space-around;
-  margin-top: 2em;
   margin: 0 auto;
 }
 
@@ -160,6 +160,42 @@
 
 .savedTime {
   cursor: pointer;
-  font-size: 1.2em;
+  font-size: 1.5em;
   border-radius: 5px;
+}
+
+.slider {
+  width: 25em;
+  overflow: visible;
+  height: 5em;
+}
+
+.slider :global(.swiper) {
+  height: 5em;
+  color: #322c28;
+  width: 25em;
+}
+
+.slider :global(.swiper-slide) {
+  color: #322c28;
+}
+
+.slider :global(.swiper-slide-active) {
+  color: #322c28;
+}
+
+.slider :global(.swiper-pagination-bullet) {
+  background-color: #322c28;
+}
+
+.slider :global(.swiper-pagination-bullet-active) {
+  background-color: #322c28;
+}
+
+.slider :global(.swiper-button-prev) {
+  color: #322c28;
+}
+
+.slider :global(.swiper-button-next) {
+  color: #322c28;
 }

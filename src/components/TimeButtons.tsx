@@ -1,6 +1,7 @@
 import styles from "@/styles/Home.module.css";
 import { useState, useCallback, useEffect } from "react";
 import TimerButton from "@/components/TimerButton";
+import SavedTimes from "@/components/SavedTimes";
 
 interface TimeButtonsProps {
   // 型定義
@@ -41,7 +42,6 @@ export default function TimeButtons({
   // 保存用のHour, Minute, Second
   const [saveArr, setSaveArr] = useState<TimeObj[]>([]);
   const [displaySaveArr, setDisplaySaveArr] = useState<DisplayTimeObj[]>([]);
-  const [disableSave, setDisableSave] = useState<boolean>(false);
 
   // localStorageに保存されているsaveArrを読み込む
   useEffect(() => {
@@ -51,15 +51,6 @@ export default function TimeButtons({
       setSaveArr(saveArrFromLocalStorage);
     }
   }, []);
-
-  // saveArrの要素が3つ以上あったら、saveボタンを無効化する
-  useEffect(() => {
-    if (saveArr.length >= 3) {
-      setDisableSave(true);
-    } else {
-      setDisableSave(false);
-    }
-  }, [saveArr]);
 
   // saveArrの要素が変更されたら、表示用のsaveArrを更新する
   useEffect(() => {
@@ -75,10 +66,6 @@ export default function TimeButtons({
   }, [saveArr]);
 
   const saveHandler = useCallback(() => {
-    // もし、saveArrの要素が3つ以上あったら、保存しない。
-    if (saveArr.length >= 3) {
-      return null;
-    }
     const newSaveArr = [
       ...saveArr,
       { hour: hour, minute: minute, second: second },
@@ -113,7 +100,7 @@ export default function TimeButtons({
         <button
           className={styles.saveButton}
           onClick={saveHandler}
-          disabled={isActive || disableSave}
+          disabled={isActive}
         >
           save
         </button>
@@ -126,18 +113,11 @@ export default function TimeButtons({
         </button>
       </div>
       <div className={styles.savedTimes}>
-        {displaySaveArr?.map((obj, key) => {
-          return (
-            <button
-              key={key}
-              className={styles.savedTime}
-              onClick={() => {
-                loadHandler(key);
-              }}
-              disabled={isActive}
-            >{`${obj.hour}:${obj.minute}:${obj.second}`}</button>
-          );
-        })}
+        <SavedTimes
+          savedTimes={displaySaveArr}
+          loadHandler={loadHandler}
+          isActive={isActive}
+        ></SavedTimes>
       </div>
     </div>
   );
