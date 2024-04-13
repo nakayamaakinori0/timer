@@ -14,6 +14,9 @@ export default function Document() {
           type="image/png"
           href="/assets/images/favicon.png"
         ></link>
+        <link rel="manifest" href="/manifest.json"></link>
+        <link rel="apple-touch-icon" href="/icon.png"></link>
+        <meta name="theme-color" content="#fff"></meta>
       </Head>
       <body>
         <Main />
