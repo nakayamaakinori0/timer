@@ -11,3 +11,7 @@ lazygit
 lazygit.tar.gz
 
 certificates
+
+out/
+
+.DS_Store
