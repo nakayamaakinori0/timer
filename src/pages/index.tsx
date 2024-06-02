@@ -11,6 +11,7 @@ import useTimer from "@/hooks/useTimer";
 import useAudio from "@/hooks/useAudio";
 import useNotification from "@/hooks/useNotification";
 import React from "react";
+import dayjs from "dayjs";
 
 export default function Home() {
   const [hour, setHour] = useState<number>(0);
@@ -41,7 +42,10 @@ export default function Home() {
     if (timer.isActive === true && timer.time === 0) {
       if (audio.loaded) {
         audio.play();
-        showNotification({ title: "timer", body: "times up!" });
+        showNotification({
+          title: "timer",
+          body: `times up!/n${dayjs().format()}`,
+        });
         window.addEventListener("click", stopHandler);
       }
     }
