@@ -1,3 +1,7 @@
 body {
   background-color: rgb(230, 230, 230);
+  /* 全体を真ん中に持ってきて、スクロールをさせない */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
